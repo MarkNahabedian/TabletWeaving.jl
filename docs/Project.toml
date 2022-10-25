@@ -1,0 +1,3 @@
+[deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+TabletWeaving = "562db2e1-a68d-468c-8704-31bf85beff7e"
