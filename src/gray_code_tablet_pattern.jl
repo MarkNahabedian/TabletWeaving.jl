@@ -20,47 +20,28 @@ begin
 	using XML
 	using OrderedCollections
 	using LinearAlgebra
+
+	include(joinpath(@__DIR__, "svg.jl"))  # Work around Pluto notebook ordering issue.
 end
+
+# ╔═╡ 581fda2d-0771-4283-8ca1-4b88cbeffecf
+# Given an array that represewnts an image we want to weave, which dimension
+# is the warp, and which is the weft?
+
+include(joinpath(@__DIR__, "util.jl"))
+
+# ╔═╡ 0baa4c77-bf7a-4d39-b964-d4636975f8fa
+include(joinpath(@__DIR__, "elt.jl"))
+
+# ╔═╡ bf12e28b-6bd1-45e3-9cea-e81d412c0097
+# Moved to tablets.jl
+
+include(joinpath(@__DIR__, "tablets.jl"))
 
 # ╔═╡ 89e97690-18a6-11ed-15e4-4bb0cd5b7c50
 md"""
 # Gray Code Tablet Weaving Pattern
 """
-
-# ╔═╡ 581fda2d-0771-4283-8ca1-4b88cbeffecf
-# Given an array that represewnts an image we want to weave, which dimension
-# is the warp, and which is the weft?
-"""
-	longer_dimension_counts_weft(image)
-
-Return an image with the dimensions possibly permuted such that each increment
-in the first dimension counts a new row of the weft.  The second dimension
-indexes the color of the visible warp thread for that row.
-"""
-function longer_dimension_counts_weft(image)
-	if size(image)[1] < size(image)[2]
-		permutedims(image, [2, 1])
-	else
-		image
-	end
-end	
-
-# ╔═╡ 0baa4c77-bf7a-4d39-b964-d4636975f8fa
-# XML.jl convenience function for making elements:
-function elt(tag::String, stuff...)
-    attributes = Dict{Symbol, String}()
-    children = []
-    for s in stuff
-        if s isa Pair
-            attributes[s.first] = string(s.second)
-        elseif s isa Number
-            push!(children, string(s))
-        else
-            push!(children, s)
-        end
-    end
-    XML.Node(XML.ELEMENT_NODE, tag, attributes, children)
-end
 
 # ╔═╡ 590963b9-bd0f-4c32-a778-873d22ec9c0f
 md"""
@@ -80,227 +61,7 @@ COLORS = [ RGB(1, 0, 0), RGB(0, 1, 0), RGB(0, 0, 1)]
 size(hcat(gray_sequence...))
 
 # ╔═╡ 1cf1cf59-d324-447a-8a72-b393c96b549f
-md"""
-## Tablets
-
-A tablet or card is a square piece of card stock.
-
-It has a front and a back.
-
-It has a hole on each of it's four corners.
-
-When looking at the front of the card, the holes are labeled **A**,
-**B**, **C**, and **D** clockwise.
-
-The edges of the card are numbered, with the edge from corner **A** to
-corner **B** numbered **1**.  The edge between **B** and **C** numbered **2**,
-and so on around the card.
-
-For weaving, one warp thread passes through each hole.
-
-The four warp threads for a tablet pass from the warp beam,
-through the tablet, to the cloth beam.  They can pass through the
-tablet from `BackToFront` or `FrontToBack`.
-
-Which thread passes through which hole, and how the tablet is
-threaded, can not change once the loom is warped.
-
-It's easier to think about how the stitches are formed if the
-tablets are facing (either back or front depending on threading)
-the weaver.  For compactness though the cards are stacked so that
-the weaver is facing their edges.  When stacked, each tablet can
-be oriented FrontToTheRight or FrontToTheLeft.
-
-Which direction a tablet is facing when it is stacked can be changed
-during weaving.
-
-For each new row, each tablet must be rotated, and its stacking may
-be flipped.  These operations affect the locations of the labeled
-holes (and their warp threads) relative to the loom.
-"""
-
-# ╔═╡ 68c32382-4511-4345-a523-d9854b91e754
-md"""
-### Tablet Threading
-
-How the warp threads pass through a tablet, the `TabletThreading`, can either be
-`BackToFront` or `FrontToBack`.
-
-for `BackToFront` threading, warp threads pass from the warp beam through the
-tablet from back to front and then to the cloth beam.
-
-For `FrontToBack` threading, Warp threads pass from the warp beam through the
-tablet from front to back and then to the cloth beam.
-
-These threadings also have a concise textual representation.  `BackToFront` can
-be represented by `/`or `z`.  `BackToFront` can be represented by `\\` or `s`.
-"""
-
-# ╔═╡ 786f8502-a081-4baf-b82d-a936cdfaae5e
-begin
-    abstract type TabletThreading end
-
-	"""
-	Warp threads pass from the warp beam through the tablet from back to front.
-	"""
-    struct BackToFront <: TabletThreading end
-
-	"""
-	Warp threads pass from the warp beam through the tablet from front to back.
-	"""
-    struct FrontToBack <: TabletThreading end
-
-    other(::BackToFront) = FrontToBack()
-    other(::FrontToBack) = BackToFront()
-
-	function threading_for_char(c::AbstractChar)
-		if c == '/' || c == 'z' || c == 'Z'
-			return BackToFront()
-		end
-		if c == '\\' || c == 's' || c == 'S'
-			return FrontToBack()
-		end
-		error("Invalid threading designation: $c")
-	end
-
-	threading_char(::BackToFront) = '\u2571'
-	threading_char(::BackToFront) = '\u2572'
-end
-
-# ╔═╡ 6d65f0b3-7370-4a7d-82bc-607f8b0f8c8c
-md"""
-### Tablet Stacking
-
-If the tablets are arranged with a flat side facing the weaver this would take
-too much space and also cause other inconveniences.  Instead, tablets are
-arrahged so that their flat faces face each other.  This forms a horizontal
-stack from one side of the loom to the other.
-
-When stacked like this, a tablet is said to be stacked `FrontToTheRight` if
-it's front face faces towards the right side of the loom rom the weaver's
-perspective. A tablet facing the opposite direction is said to be threaded
-`FrontToTheLeft`.
-
-For brevity in textual representations, `FrontToTheRight` is represented with
-a `→` right arrow and `FrontToTheLeft` with a `←` left arrow.
-"""
-
-# ╔═╡ b12c2fe2-a32e-4e6f-a7d7-cfc24e8cb00c
-begin
-    abstract type TabletStacking end
-
-    struct FrontToTheRight <: TabletStacking end
-
-    struct FrontToTheLeft <: TabletStacking end
-
-    other(::FrontToTheRight) = FrontToTheLeft()
-    other(::FrontToTheLeft) = FrontToTheRight()
-
-	# An arrow showing which direction the front of a
-	# tablet is currently facing.
-	tablet_stacking_to_char(::FrontToTheRight) = '→'
-	tablet_stacking_to_char(::FrontToTheLeft) = '←'
-end
-
-# ╔═╡ 0fea18b7-b40e-4ca5-95e5-744e619ea14a
-@kwdef mutable struct Tablet{T}
-	id = nothing
-	a::T
-	b::T
-	c::T
-	d::T
-	threading::TabletThreading = BackToFront()
-	# The above properties can not be changed after the loom has been warped.
-	stacking::TabletStacking = FrontToTheRight()
-	accumulated_rotation::Int = 0
-	this_shot_rotation::Int = 0
-	# It is helpful to know the range of thread twist imposed by a weaving pattern:
-	min_rotation = 0
-	max_rotation = 0
-end
-
-# ╔═╡ 61de53db-f01d-4294-8baf-d570abcd8d15
-function copy(t::Tablet)
-	@assert t.id == nothing
-	@assert t.accumulated_rotation == 0
-	@assert t.this_shot_rotation == 0
-	@assert t.min_rotation == 0
-	@assert t.max_rotation == 0
-	Tablet(;
-		id = t.id,
-		a = t.a,
-		b = t.b,
-		c = t.c,
-		d = t.d,
-		threading = t.threading,
-		stacking = t.stacking)
-end
-
-# ╔═╡ 31bdd4ca-aa24-4600-9a72-36410636019b
-md"""
-We use a `Vector` of `Tablet`s to describe how the loom is set up for
-weaving.  for convenience, we can add these vectors together for a
-wider pattern.  We can also multiply them to repeat tablets.
-"""
-
-# ╔═╡ bf12e28b-6bd1-45e3-9cea-e81d412c0097
-begin
-    function (Base.:+)(a::Tablet{<:Any}, b::Tablet{<:Any})
-        [a; b]
-    end
-
-    function (Base.:+)(a::Tablet{<:Any}, v::Vector{<:Tablet{<:Any}})
-        [a; v...]
-    end
-
-    function (Base.:+)(v::Vector{<:Tablet{<:Any}}, b::Tablet{<:Any})
-		[v...; b]
-    end
-
-    function (Base.:+)(v1::Vector{<:Tablet{<:Any}}, v2::Vector{<:Tablet{<:Any}})
-		[v1...; v2...]
-    end
-
-	function (Base.:+)(v1::Vector{<:Tablet{<:Any}}, vs::Vector{<:Tablet{<:Any}}...)
-		result = v1
-		for v2 in vs
-			result += v2
-		end
-		result
-    end
-
-	function (Base.:*)(repeat::Int, t::Tablet{<:Any})
-		result = Vector{Tablet{<:Any}}()
-		for i in 1:repeat
-		    push!(result, copy(t))
-		end
-		result
-    end
-
-    function (Base.:*)(repeat::Int, v::Vector{<:Tablet{<:Any}})
-		result = Vector{Tablet{<:Any}}()
-		for i in 1:repeat
-		    append!(result, copy.(v))
-		end
-		result
-    end
-end
-
-# ╔═╡ c2b1f51e-77fb-4e23-94cc-699c124b81c3
-GRAY_PATTERN = map(hcat(gray_sequence...)) do bit
-	COLORS[bit + 1]
-end
-
-# ╔═╡ 78e317ca-d347-45a9-9058-b2e7b187c843
-GRAY_WEAVE = let
-	# Reflect GRAY_PATTERN on both axes and add leading and trailing background:
-	pattern = GRAY_PATTERN
-	for _ in 1:4
-		pattern = hcat(pattern[:, 1], pattern)
-	end
-	bottom = hcat(pattern, reverse(pattern; dims=2))
-	vcat(reverse(bottom; dims=1), bottom)
-end
+# Moved to docs
 
 # ╔═╡ 47320875-bad1-4528-8f78-82b017deedab
 begin
@@ -391,6 +152,24 @@ begin
 	html"Tablet structure assertions pass"
 end
 
+# ╔═╡ 68c32382-4511-4345-a523-d9854b91e754
+# Moved to docs
+
+# ╔═╡ 786f8502-a081-4baf-b82d-a936cdfaae5e
+# Moved to tablets.jl
+
+# ╔═╡ 6d65f0b3-7370-4a7d-82bc-607f8b0f8c8c
+# Moved to docs
+
+# ╔═╡ b12c2fe2-a32e-4e6f-a7d7-cfc24e8cb00c
+# Moved to tablets.jl
+
+# ╔═╡ 0fea18b7-b40e-4ca5-95e5-744e619ea14a
+# Moved to tablets.jl
+
+# ╔═╡ 61de53db-f01d-4294-8baf-d570abcd8d15
+# Moved to tablets.jl
+
 # ╔═╡ a5796f2d-3754-4d99-9a37-2b476cc4f5a2
 function warp_color(t::Tablet{T}, hole::TabletHole)::T where T
 	h = hole.label
@@ -402,34 +181,11 @@ function warp_color(t::Tablet{T}, hole::TabletHole)::T where T
 	end
 end
 
+# ╔═╡ 31bdd4ca-aa24-4600-9a72-36410636019b
+# Moved to docs
+
 # ╔═╡ 40bd184d-3332-49c0-a349-64b4e5fcc4aa
-let
-	border_color = RGB(0.5, 0.5, 0.5)
-	border1 = Tablet(
-		a=border_color,
-		b=border_color,
-		c=border_color,
-		d=border_color,
-		threading=BackToFront())
-
-	tplust = 2 * border1
-	@assert tplust isa Vector{Tablet{<:Any}}
-	@assert length(tplust) == 2
-
-	double = 2 * border1
-	@assert double isa Vector{Tablet{<:Any}}
-	@assert length(double) == 2
-
-	@assert length(border1 + border1 + border1) == 3
-
-	@assert length(2 * double) == 4
-
-	@assert length(double + tplust) == 4
-
-	@assert length(double + 3 * border1) == 5
-
-	html"Tablet arithmetic assertions pass."
-end
+# Moved to runtests.jl.
 
 # ╔═╡ 56453fbd-6f6a-4c11-b2ba-acae84b66f48
 md"""
@@ -1159,9 +915,6 @@ function tablets_for_image(image)
 	end
 end
 
-# ╔═╡ 4bd5b024-9be5-42f3-999b-6d9300003dd9
-tablets_for_image(longer_dimension_counts_weft(GRAY_WEAVE))
-
 # ╔═╡ 24a0fb03-3cf5-46a2-83bc-92e2607a9216
 md"""
 `tablets_for_image` does nothing about tablet threading, only colors.
@@ -1187,31 +940,6 @@ function symetric_threading!(tablets::Vector{<:Tablet};
 	end
 	tablets
 end
-
-# ╔═╡ 11ac0388-eadf-48c7-8ec9-2c4ce0f5169f
-GRAY_TABLETS = let
-	border_color = RGB(0.5, 0.5, 0.5)
-	border1 = Tablet(
-		a=border_color,
-		b=border_color,
-		c=border_color,
-		d=border_color,
-		threading=BackToFront())
-	border2 = Tablet(
-		a=border1.a,
-		b=border1.b,
-		c=border1.c,
-		d=border1.d,
-		threading=other(border1.threading))
-	(2 * border1) +
-		symetric_threading!(tablets_for_image(
-			longer_dimension_counts_weft(GRAY_WEAVE));
-					leftthreading=other(border1.threading)) +
-		(2 * border2)
-end
-
-# ╔═╡ 2b6d73bc-dd88-4f4a-b739-58d57b189df6
-HTML(string(chart_tablets(GRAY_TABLETS)))
 
 # ╔═╡ 02798c2e-3d12-4eff-90f8-e24a631ad8f0
 """
@@ -1253,18 +981,6 @@ function want_color(tablet::Tablet{T}, color::T) where T
 		end
 	end
 	return new_edge, rot
-end
-
-# ╔═╡ 432d26a6-bac4-48b8-a0ab-1bb1c246d513
-let
-	tablet = GRAY_TABLETS[5]
-	red = tablet.a
-	yellow = tablet.b
-	red, yellow #=
-	@assert want_color(tablet, red) == (TabletEdge(4), Forward())
-	@assert want_color(tablet, yellow) == (TabletEdge(2), Backward())
-	html"want_color tests pass."
-	=#
 end
 
 # ╔═╡ a38a5557-7a7d-49d3-8041-7a6d655e6a37
@@ -1399,16 +1115,6 @@ end
 # ╔═╡ 4d45dbf1-41cf-4568-b099-789630effce3
 tablets(p::TabletWeavingPattern) = copy.(p.initial_tablets)
 
-# ╔═╡ bec2540b-b3e8-47a7-b968-769b8765d9ef
-WOVEN_GRAY_PATTERN = TabletWeavingPattern("Gray Code Pattern", GRAY_WEAVE;
-	threading_function = symetric_threading!)
-
-# ╔═╡ 842b33c6-3ab2-461e-b8ad-f30f224a0d11
-string(pretty_stitches(WOVEN_GRAY_PATTERN.top_image_stitches, false))
-
-# ╔═╡ 9c8d2181-b183-40e5-b235-16a59727fda8
-HTML(string(pretty(WOVEN_GRAY_PATTERN)))
-
 # ╔═╡ 2247a5df-98f8-4d63-8443-2a1cb743aa8b
 HTML(string(
 let
@@ -1499,110 +1205,7 @@ end
 ))
 
 # ╔═╡ 9cc8f230-1294-420f-a877-726931e7e79f
-"""
-    svg_stitch(stitch_width, stitch_length, stitch_diameter, slant::Char)
-
-Generate the SVG for drawing a stitch.
-
-`stitch_width` is the width of the stitch on the SVG X and weaving
-weft axis.
-
-`stitch_diameter` is how wide the stitch is.
-
-`stitch_length` is the length of the stitch in the SVG Y and warp
-axis.
-
-`slant` is as returned by `shot!`.
-   
-"""
-function svg_stitch(stitch_width, stitch_length, 
-                    stitch_diameter, slant::Char;
-                    show_guides = false)
-    stitch_radius = stitch_diameter / 2
-    circle1 = [
-        stitch_radius,
-        stitch_length - stitch_radius
-    ]
-    circle2 = [
-        stitch_width - stitch_radius,
-        stitch_radius
-    ]
-    if slant == '\\'
-        # Swap X coordinates:
-        (circle1[1], circle2[1]) = (circle2[1], circle1[1])
-    end
-    # we can translate the center of each circle by +/= the vector
-    # perpendicular to this angle:
-    diagonal = circle2 - circle1
-    trans = [ - diagonal[2], diagonal[1] ]    # perpendicular
-    trans = trans / norm(trans)               # unit vector
-    trans = trans * stitch_radius
-
-    guide_style = join(
-        [
-            "stroke: blue",
-            "stroke-width: 1px",
-            "fill: none",
-            "vector-effect: non-scaling-stroke"
-        ], "; ")
-    stitch_style = join(
-        [
-            # "stroke: yellow",
-            "stroke-width: 1px",
-            "vector-effect: non-scaling-stroke"
-        ], "; ")
-
-    function line(p1, p2, style)
-        elt("line",
-            :x1 => p1[1],
-            :y1 => p1[2],
-            :x2 => p2[1],
-            :y2 => p2[2],
-            :style => style)
-    end
-
-    guides = []
-    if show_guides
-        push!(guides,
-              # bounding rectangle:
-              elt("rect",
-                  :x => 0,
-                  :y => 0,
-                  :width => stitch_width,
-                  :height => stitch_length,
-                  :style => guide_style),
-              # Diagonal:
-              line(circle1, circle2, guide_style),
-              # Normals:
-              line(circle1, circle1 + trans, guide_style),
-              line(circle2, circle2 + trans, guide_style))
-    end
-    p1 = circle1 + trans
-    p2 = circle2 + trans
-    p3 = circle2 - trans
-    p4 = circle1 - trans
-    pathpoint(p) = join(string.(p), " ")
-
-    elt("g",
-        # viewBox="0 0 $(2 * stitch_width) $(2 * stitch_length)",
-        # width="50%",
-        guides...,
-        elt("path",
-            :style => stitch_style,
-            :d => join([
-                "M $(pathpoint(p1))",
-                "L $(pathpoint(p2))",
-                let
-                    r = stitch_radius
-                    "A $r $r 0 0 0 $(pathpoint(p3))"
-                end,
-                "L $(pathpoint(p4))",
-                let
-                    r = stitch_radius
-                    "A $r $r 0 0 0 $(pathpoint(p1))"
-                end,
-            ], " ")))
-end
+# Moved to svg.jl
 
 
 # ╔═╡ abb9e8cd-564e-4fef-afd4-7f05eb76a944
@@ -1652,6 +1255,72 @@ HTML(string(
     end
 ))
 
+
+# ╔═╡ c2b1f51e-77fb-4e23-94cc-699c124b81c3
+GRAY_PATTERN = map(hcat(gray_sequence...)) do bit
+	COLORS[bit + 1]
+end
+
+# ╔═╡ 78e317ca-d347-45a9-9058-b2e7b187c843
+GRAY_WEAVE = let
+	# Reflect GRAY_PATTERN on both axes and add leading and trailing background:
+	pattern = GRAY_PATTERN
+	for _ in 1:4
+		pattern = hcat(pattern[:, 1], pattern)
+	end
+	bottom = hcat(pattern, reverse(pattern; dims=2))
+	vcat(reverse(bottom; dims=1), bottom)
+end
+
+# ╔═╡ 4bd5b024-9be5-42f3-999b-6d9300003dd9
+tablets_for_image(longer_dimension_counts_weft(GRAY_WEAVE))
+
+# ╔═╡ 11ac0388-eadf-48c7-8ec9-2c4ce0f5169f
+GRAY_TABLETS = let
+	border_color = RGB(0.5, 0.5, 0.5)
+	border1 = Tablet(
+		a=border_color,
+		b=border_color,
+		c=border_color,
+		d=border_color,
+		threading=BackToFront())
+	border2 = Tablet(
+		a=border1.a,
+		b=border1.b,
+		c=border1.c,
+		d=border1.d,
+		threading=other(border1.threading))
+	(2 * border1) +
+		symetric_threading!(tablets_for_image(
+			longer_dimension_counts_weft(GRAY_WEAVE));
+					leftthreading=other(border1.threading)) +
+		(2 * border2)
+end
+
+# ╔═╡ 2b6d73bc-dd88-4f4a-b739-58d57b189df6
+HTML(string(chart_tablets(GRAY_TABLETS)))
+
+# ╔═╡ 432d26a6-bac4-48b8-a0ab-1bb1c246d513
+let
+	tablet = GRAY_TABLETS[5]
+	red = tablet.a
+	yellow = tablet.b
+	red, yellow #=
+	@assert want_color(tablet, red) == (TabletEdge(4), Forward())
+	@assert want_color(tablet, yellow) == (TabletEdge(2), Backward())
+	html"want_color tests pass."
+	=#
+end
+
+# ╔═╡ bec2540b-b3e8-47a7-b968-769b8765d9ef
+WOVEN_GRAY_PATTERN = TabletWeavingPattern("Gray Code Pattern", GRAY_WEAVE;
+	threading_function = symetric_threading!)
+
+# ╔═╡ 842b33c6-3ab2-461e-b8ad-f30f224a0d11
+string(pretty_stitches(WOVEN_GRAY_PATTERN.top_image_stitches, false))
+
+# ╔═╡ 9c8d2181-b183-40e5-b235-16a59727fda8
+HTML(string(pretty(WOVEN_GRAY_PATTERN)))
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -2065,7 +1734,6 @@ version = "17.4.0+0"
 # ╠═e147b976-9227-4d54-8b14-f05d8eb0d42e
 # ╠═fcb7d96f-f2ce-44cb-ac86-3ef6a6195bf4
 # ╠═b04d2b69-aa8a-4174-8ef8-3e6b797354e7
-# ╠═c2b1f51e-77fb-4e23-94cc-699c124b81c3
 # ╠═78e317ca-d347-45a9-9058-b2e7b187c843
 # ╟─1cf1cf59-d324-447a-8a72-b393c96b549f
 # ╠═47320875-bad1-4528-8f78-82b017deedab
@@ -2152,5 +1820,6 @@ version = "17.4.0+0"
 # ╠═2247a5df-98f8-4d63-8443-2a1cb743aa8b
 # ╠═9cc8f230-1294-420f-a877-726931e7e79f
 # ╠═abb9e8cd-564e-4fef-afd4-7f05eb76a944
+# ╠═c2b1f51e-77fb-4e23-94cc-699c124b81c3
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
