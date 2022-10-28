@@ -20,6 +20,7 @@ begin
 	using XML
 	using OrderedCollections
 	using LinearAlgebra
+	using Parameters
 
 	include(joinpath(@__DIR__, "svg.jl"))  # Work around Pluto notebook ordering issue.
 end
@@ -64,93 +65,10 @@ size(hcat(gray_sequence...))
 # Moved to docs
 
 # ╔═╡ 47320875-bad1-4528-8f78-82b017deedab
-begin
-	# The structure of a Tablet:
-
-	TABLET_HOLE_LABELS = 'A':'D'
-	TABLET_EDGE_LABELS = 1:4
-	
-	struct TabletHole
-		label::Char
-
-		function TabletHole(label::Char)
-			@assert label in TABLET_HOLE_LABELS
-			new(label)
-		end
-	end
-
-	struct TabletEdge
-		label::Int
-	
-		function TabletEdge(label::Int)
-			@assert label in TABLET_EDGE_LABELS
-			new(label)
-		end
-	end
-
-	function modindex(index, seq)
-		Int(mod(index - 1, length(seq)) + 1)
-	end
-
-	next(elt, seq) =
-		seq[modindex(findfirst(x -> x == elt, seq) + 1, seq)]
-
-	previous(elt, seq) =
-		seq[modindex(findfirst(x -> x == elt, seq) - 1, seq)]
-
-	function opposite(elt, seq)
-		@assert iseven(length(seq))
-		seq[
-			modindex(findfirst(x -> x == elt, seq) + length(seq) / 2,
-				seq)
-		]
-	end
-
-	next(hole::TabletHole) = TabletHole(next(hole.label, TABLET_HOLE_LABELS))
-	previous(hole::TabletHole) = TabletHole(previous(hole.label, TABLET_HOLE_LABELS))
-	opposite(hole::TabletHole) = TabletHole(opposite(hole.label, TABLET_HOLE_LABELS))
-
-	next(edge::TabletEdge) = TabletEdge(next(edge.label, TABLET_EDGE_LABELS))
-	previous(edge::TabletEdge) = TabletEdge(previous(edge.label, TABLET_EDGE_LABELS))
-	opposite(edge::TabletEdge) = TabletEdge(opposite(edge.label, TABLET_EDGE_LABELS))
-
-	function next_hole(edge::TabletEdge)::TabletHole
-		label = edge.label
-		if label == 1 TabletHole('B')
-		elseif label == 2 TabletHole('C')
-		elseif label == 3 TabletHole('D')
-		elseif label == 4 TabletHole('A')
-		else error("Unsupported edge label: $label")
-		end
-	end
-
-	function previous_hole(edge::TabletEdge)::TabletHole
-		label = edge.label
-		if label == 1 TabletHole('A')
-		elseif label == 2 TabletHole('B')
-		elseif label == 3 TabletHole('C')
-		elseif label == 4 TabletHole('D')
-		else error("Unsupported edge label: $label")
-		end
-	end
-end
+# Moved to tablets.jl
 
 # ╔═╡ 8b85264e-25c8-4ae3-a952-ee30d622f918
-begin
-	for hole in TabletHole.(TABLET_HOLE_LABELS)
-		@assert next(previous(hole))== hole
-		@assert previous(next(hole)) == hole
-		@assert opposite(opposite(hole)) == hole
-	end
-	
-	for edge in TabletEdge.(TABLET_EDGE_LABELS)
-		@assert next(previous(edge))== edge
-		@assert previous(next(edge)) == edge
-		@assert opposite(opposite(edge)) == edge
-	end
-	
-	html"Tablet structure assertions pass"
-end
+# Moved to runtests.jl.
 
 # ╔═╡ 68c32382-4511-4345-a523-d9854b91e754
 # Moved to docs
@@ -171,15 +89,7 @@ end
 # Moved to tablets.jl
 
 # ╔═╡ a5796f2d-3754-4d99-9a37-2b476cc4f5a2
-function warp_color(t::Tablet{T}, hole::TabletHole)::T where T
-	h = hole.label
-	if h == 'A' t.a
-	elseif h == 'B' t.b
-	elseif h == 'C' t.c
-	elseif h == 'D' t.d
-	else error("Unsuppoorted hole label: $h")
-	end
-end
+# Moved to tablets.jl.
 
 # ╔═╡ 31bdd4ca-aa24-4600-9a72-36410636019b
 # Moved to docs
@@ -188,204 +98,61 @@ end
 # Moved to runtests.jl.
 
 # ╔═╡ 56453fbd-6f6a-4c11-b2ba-acae84b66f48
-md"""
-### Tablet Rotation
-
-Prior to each new throw of the weft, the tablets are rotated to
-open a new shed.
-
-In practice (the stacked arrangement), a card will be rotated
-**forward** or **backward**.  Forward rotation moves the top
-corner of the card closest to the weaver away from the weaver
-towards the warp beam.  Backward rotation moves the top corner
-furthest from the weaver toards the weaver.
-
-Whether **forward** rotation turns the card in the **ABCD** or the 
-**DCBA** direction depends on how the card is threaded and stacked.
-
-"""
+# Moved to docs.
 
 # ╔═╡ 86033a92-cd04-4c52-845d-89a8a473506c
-"""
-    RotationDirection
-
-`RotationDirection` is the abstract supertype of all tablet rotations.
-"""
-abstract type RotationDirection end
-
-# ╔═╡ f1c8a4c6-6c22-49f4-9df1-ef3ae5e3cb40
-"""
-    rotation(::Tablet, ::RotationDirection)
-
-Return the change in the `Tablet`'s `accumulated_rotation` if the specified
-`AbstractRotation is applied.
-"""
-function rotation(::Tablet, ::RotationDirection) end
+# Moved to tablets.jl.
 
 # ╔═╡ 50e521b5-c4f7-464d-b6dd-5c7f9d5b4bd0
-"""
-    rotate!(::Tablet, ::RotationDirection)
-
-Rotate the tablet by one position in the specified direction.
-"""
-function rotate!(t::Tablet, d::RotationDirection)
-	new_rotation = rotation(t, d)
-	t.this_shot_rotation += new_rotation
-	return t
-end
+# Moved to tablets.jl.
 
 # ╔═╡ bb8a5f20-62af-4f28-b0df-85af57beb8f3
-"""
-The ABCD rotation causes the A corner of the tablet to move to
-the location in space previously occupied by the B corner.
-"""
-struct ABCD <: RotationDirection end
+# Moved to tablets.jl.
 
 # ╔═╡ 9d85d3ef-847b-405c-817b-71097b56fee5
-rotation(::Tablet, ::ABCD) = 1
+# Moved to tablets.jl.
 
 # ╔═╡ b3ec1ee7-77d8-417a-834a-70c6c6608ae7
-"""
-The DCBA rotation causes the A corner of the tablet to move to
-the location in space previously occupied by the D corner.
-"""
-struct DCBA <: RotationDirection end
+# Moved to tablets.jl.
 
 # ╔═╡ 748199f2-e5d8-4272-9120-f8b50264b5d6
-rotation(t::Tablet, ::DCBA) = -1
+# Moved to tablets.jl.
 
 # ╔═╡ e31dd514-64af-4491-aac2-b47a85372650
-let
-	bf = Tablet(; a=:A, b=:B, c=:C, d=:D, threading=BackToFront())
-	rotate!(bf, ABCD())
-	@assert bf.this_shot_rotation == 1
-	rotate!(bf, DCBA())
-	@assert bf.this_shot_rotation == 0
-	html"ABCD and DCBA assertions passed."
-end
+# Moved to runtests.jl.
 
 # ╔═╡ b38913ac-f91f-4e6d-a95a-506b8d3c754c
-"""
-The `Clockwise` direction refers to how the tablet would move if its front or
-back face (depending on threading) were facing the weaver.  Whether this
-results in ABCD or DCBA rotation depends on how the card is threaded.
-"""
-struct Clockwise <: RotationDirection end
+# Moved to tablets.jl.
 
 # ╔═╡ 8eea1d46-ca5b-48d4-9829-bce769dfcfbb
-function rotation(t::Tablet, ::Clockwise)
-	if t.threading isa BackToFront
-		rotation(t, ABCD())
-	else
-		rotation(t, DCBA())
-	end
-end
+# Moved to tablets.jl.
 
 # ╔═╡ f3a1f857-0d6c-4f29-8095-4c6f189b3604
-"""
-The `CounterClockwise` direction refers to how the tablet would move if its front
-or back face (depending on threading)  were facing the weaver.  Whether the front
-or the back of the tablet is facing the weaver depends on whether the card is
-BackToFront` or `FrontToBack` threaded.
-"""
-struct CounterClockwise <: RotationDirection end
+# Moved to tablets.jl.
 
 # ╔═╡ 82725eaa-1605-4471-a808-360d0693dd43
-function rotation(t::Tablet, ::CounterClockwise)
-	if isa(t.threading, FrontToBack)
-		rotation(t, ABCD())
-	else
-		rotation(t, DCBA())
-	end
-end
+# Moved to tablets.jl.
 
 # ╔═╡ 71e0104b-beb4-4e3e-8def-218f88fdfbcd
-let
-	bf = Tablet(; a=:A, b=:B, c=:C, d=:D, threading=BackToFront())
-	rotate!(bf, Clockwise())
-	@assert bf.this_shot_rotation == 1
-	rotate!(bf, CounterClockwise())
-	@assert bf.this_shot_rotation == 0
-	
-	fb = Tablet(; a=:A, b=:B, c=:C, d=:D, threading=FrontToBack())
-	rotate!(fb, Clockwise())
-	@assert fb.this_shot_rotation == -1
-	rotate!(fb, CounterClockwise())
-	@assert fb.this_shot_rotation == 0
-
-	html"Clockwise and CounterClockwise rotate! assertions passed."
-end
+# Moved to runtests.jl.
 
 # ╔═╡ b901fcdd-31dc-4643-9dba-21e70207141b
-"""
-The Forward rotation moves the top corner of the tablet closest to the
-weaver and the cloth beam to be the bottom corner closest to the weaver.
-"""
-struct Forward <: RotationDirection end
+# Moved to tablets.jl.
 
 # ╔═╡ 30c08bee-e3f9-4672-a4d6-29df3ba8a6e5
-function rotation(t::Tablet, ::Forward)
-	if isa(t.stacking, FrontToTheRight)
-		rotation(t, ABCD())
-	else
-		rotation(t, DCBA())
-	end
-end
+# Moved to tablets.jl.
 
 # ╔═╡ 5498ffbc-40f9-44dd-9b6a-484e2498c406
-"""
-The Backward rotation moves the top corner of the tablet closest to the
-weaver and the cloth beam to be the bottom corner closest to the weaver.
-"""
-struct Backward <: RotationDirection end
+# Moved to tablets.jl.
 
 # ╔═╡ 6d796003-f336-44ed-8831-8ea2b56fe865
-function rotation(t::Tablet, ::Backward)
-	if isa(t.stacking, FrontToTheLeft)
-		rotation(t, ABCD())
-	else
-		rotation(t, DCBA())
-	end
-end
+# Moved to tablets.jl.
 
 # ╔═╡ 1b7b4e33-97c3-4da6-ad86-b9b4646dc619
-begin
-	tablet_rotation_char(::Forward) = "🡑"
-	tablet_rotation_char(::Backward) = "🡓"
-end
+# Moved to tablets.jl.
 
 # ╔═╡ b396b71e-8510-4f7c-9017-50693b2f9c1d
-let
-	bf = Tablet(; a=:A, b=:B, c=:C, d=:D,
-			threading=BackToFront(),
-			stacking=FrontToTheRight())
-	rotate!(bf, Forward())
-	@assert bf.this_shot_rotation == 1
-	rotate!(bf, Backward())
-	@assert bf.this_shot_rotation == 0
-	
-	fb = Tablet(; a=:A, b=:B, c=:C, d=:D,
-			threading=FrontToBack(),
-			stacking=FrontToTheRight())
-	rotate!(fb, Forward())
-	@assert fb.this_shot_rotation == 1
-	rotate!(fb, Backward())
-	@assert fb.this_shot_rotation == 0
-
-	bf.stacking = FrontToTheLeft()
-	rotate!(bf, Forward())
-	@assert bf.this_shot_rotation == -1
-	rotate!(bf, Backward())
-	@assert bf.this_shot_rotation == 0
-	
-	fb.stacking = FrontToTheLeft()
-	rotate!(fb, Forward())
-	@assert fb.this_shot_rotation == -1
-	rotate!(fb, Backward())
-	@assert fb.this_shot_rotation == 0
-
-	html"Forward and Backward rotate! assertions passed."
-end
+# Moved to runtests.jl.
 
 # ╔═╡ ede7b3b1-5ec6-4abe-95c2-72b68552695a
 md"""
@@ -395,35 +162,10 @@ where or which edge of the card faces the shed.
 """
 
 # ╔═╡ e275a226-c404-4e8b-a9de-2b126da4b452
-#=
-let
-	t = Tablet(; a=:A, b=:B, c=:C, d=:D)
-	@assert threads(t) == [:A, :B, :C, :D]
-	t.accumulated_rotation = 1
-	@assert threads(t) == [:D, :A, :B, :C]
-	html"threads() assertions passed."
-end
-=#
+# Removed obsolete, commented out code.
 
 # ╔═╡ f7e02d45-6de4-408c-99a0-ecaa274c6f39
-"""
-    top_edge(::Tablet)::TabletEdge
-
-Return the TabletEdge of the top edge of the tablet.
-This edge is easier to see on the loom than the shed edge
-It is also unaffected by the tablet's `stacking`.
-"""
-function top_edge(t::Tablet)::TabletEdge
-	# t.stacking affects which edge faces the shed but not which is on top
-	# since changing t.stacking can only be done by flipping the card on its
-	# vertical axis.
-	r = mod(t.accumulated_rotation, 4)
-	if r == 0 TabletEdge(1)
-	elseif r == 1 TabletEdge(4)
-	elseif r == 2 TabletEdge(3)
-	else TabletEdge(2)
-	end
-end
+# Moved to tablets.jl.
 
 # ╔═╡ ea0b660e-9512-4ad1-b99a-e17753f47d74
 """
@@ -1329,12 +1071,14 @@ Colors = "5ae59095-9a9b-59fe-a467-6f913c188581"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Markdown = "d6f4376e-aef5-505a-96c1-9c027394607a"
 OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
+Parameters = "d96e819e-fc66-5662-9728-84c9c7592b0a"
 Pluto = "c3e4b0f8-55cb-11ea-2926-15256bba5781"
 XML = "72c71f33-b9b6-44de-8c94-c961784809e2"
 
 [compat]
 Colors = "~0.12.8"
 OrderedCollections = "~1.4.1"
+Parameters = "~0.12.3"
 Pluto = "~0.19.14"
 XML = "~0.1.3"
 """
@@ -1345,7 +1089,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.0"
 manifest_format = "2.0"
-project_hash = "d6e0e330e038d0ca613e56390dea1aea1f731742"
+project_hash = "7ad9e49ee09d8dae783cecd63b42ead807201d89"
 
 [[deps.AbstractTrees]]
 git-tree-sha1 = "5c0b629df8a5566a06f5fef5100b53ea56e465a0"
@@ -1567,6 +1311,12 @@ git-tree-sha1 = "85f8e6578bf1f9ee0d11e7bb1b1456435479d47c"
 uuid = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
 version = "1.4.1"
 
+[[deps.Parameters]]
+deps = ["OrderedCollections", "UnPack"]
+git-tree-sha1 = "34c0e9ad262e5f7fc75b10a9952ca7692cfc5fbe"
+uuid = "d96e819e-fc66-5662-9728-84c9c7592b0a"
+version = "0.12.3"
+
 [[deps.Pkg]]
 deps = ["Artifacts", "Dates", "Downloads", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "Serialization", "TOML", "Tar", "UUIDs", "p7zip_jll"]
 uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
@@ -1693,6 +1443,11 @@ version = "1.4.0"
 deps = ["Random", "SHA"]
 uuid = "cf7118a7-6976-5b1a-9a39-7adc72f591a4"
 
+[[deps.UnPack]]
+git-tree-sha1 = "387c1f73762231e86e0c9c5443ce3b4a0a9a0c2b"
+uuid = "3a884ed6-31ef-47d7-9d2a-63182c4928ed"
+version = "1.0.2"
+
 [[deps.Unicode]]
 uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
 
@@ -1750,7 +1505,6 @@ version = "17.4.0+0"
 # ╟─40bd184d-3332-49c0-a349-64b4e5fcc4aa
 # ╟─56453fbd-6f6a-4c11-b2ba-acae84b66f48
 # ╟─86033a92-cd04-4c52-845d-89a8a473506c
-# ╟─f1c8a4c6-6c22-49f4-9df1-ef3ae5e3cb40
 # ╟─50e521b5-c4f7-464d-b6dd-5c7f9d5b4bd0
 # ╟─bb8a5f20-62af-4f28-b0df-85af57beb8f3
 # ╟─9d85d3ef-847b-405c-817b-71097b56fee5

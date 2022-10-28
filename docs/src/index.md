@@ -45,6 +45,26 @@ be flipped.  These operations affect the locations of the labeled
 holes (and their warp threads) relative to the loom.
 
 
+### Tablet Structure
+
+We represent each edge of a tablet by a `TabletEdge` and each hole by a
+`TabletHole`:
+
+```@docs
+TabletHole
+TabletEdge
+```
+
+The functions `next`, `previous`and `opposite` can beapplied to a
+`TabletHole` or a `TabletEdge` to get the next, previous, or opposite
+one respectively.
+
+```@docs
+next_hole
+previous_hole
+```
+
+
 ### Tablet Threading
 
 How the warp threads pass through a tablet, the `TabletThreading`, can either be
@@ -101,9 +121,40 @@ Modules = [TabletWeaving]
 
 ```@docs
 Tablet
+warp_color
+top_edge
 ```
 
 We use a `Vector` of `Tablet`s to describe how the loom is set up for
 weaving.  for convenience, we can add these vectors together for a
 wider pattern.  We can also multiply them to repeat tablets.
+
+
+
+### Tablet Rotation
+
+Prior to each new throw of the weft, the tablets are rotated to
+open a new shed.
+
+In practice (the stacked arrangement), a card will be rotated
+**forward** or **backward**.  Forward rotation moves the top
+corner of the card closest to the weaver away from the weaver
+towards the warp beam.  Backward rotation moves the top corner
+furthest from the weaver toards the weaver.
+
+Whether **forward** rotation turns the card in the **ABCD** or the 
+**DCBA** direction depends on how the card is threaded and stacked.
+
+```@docs
+RotationDirection
+rotation
+rotate!
+ABCD
+DCBA
+Clockwise
+CounterClockwise
+Forward
+Backward
+```
+
 
