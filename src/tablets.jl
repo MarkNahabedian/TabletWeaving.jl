@@ -5,12 +5,11 @@ export TabletStacking, FrontToTheRight, FrontToTheLeft, tablet_stacking_to_char
 export Tablet
 export TABLET_HOLE_LABELS, TABLET_EDGE_LABELS, TabletHole, TabletEdge,
     next, previous, opposite
-
 export RotationDirection, rotation, rotate!,
     ABCD, DCBA,
     Clockwise, CounterClockwise,
     Forward, Backward
-
+export shot!
 
 
 ############################################################
@@ -431,4 +430,44 @@ end
 
 tablet_rotation_char(::Forward) = "🡑"
 tablet_rotation_char(::Backward) = "🡓"
+
+
+############################################################
+# Throwing a Weft
+
+"""
+    shot!(::Tablet)
+
+Apply the current rotation to the tablet and return the colors of the warp
+threads passing over the top and bottom of the fabric, and the crossing
+direction (as a forward or backslash character) when looking at that face
+of the fabric.
+"""
+function shot!(t::Tablet)
+	@assert(abs(t.this_shot_rotation) == 1,
+		"in shot!, this_shot_rotation = $(t.this_shot_rotation)")
+	te = top_edge(t)
+	be = opposite(te)
+	t.accumulated_rotation += t.this_shot_rotation
+	t.min_rotation = min(t.min_rotation, t.accumulated_rotation)
+	t.max_rotation = min(t.max_rotation, t.accumulated_rotation)
+	hole = if t.this_shot_rotation > 0
+		if t.threading isa BackToFront
+			stitchslant = '/'
+		else
+			stitchslant = '\\'
+		end
+		previous_hole
+	else
+		if t.threading isa BackToFront
+			stitchslant = '\\'
+		else
+			stitchslant = '/'
+		end
+		next_hole
+	end
+	t.this_shot_rotation = 0
+	wc(edge) = warp_color(t, hole(edge))
+	return wc(te), wc(be), stitchslant
+end
 

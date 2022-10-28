@@ -1,3 +1,5 @@
+export longer_dimension_counts_weft
+export csscolor
 
 """
 	longer_dimension_counts_weft(image)
@@ -13,3 +15,18 @@ function longer_dimension_counts_weft(image)
 		image
 	end
 end	
+
+
+"""
+    csscolor(color)
+return (as a string) the CSS representation of the color.
+"""
+function csscolor end
+
+function csscolor(color::RGB)
+    css(x) = Int(round(x * 255))
+    "rgb($(css(color.r)), $(css(color.g)), $(css(color.b)))"
+end
+
+csscolor(color::Colorant) = "#$(hex(color))"
+

@@ -110,13 +110,6 @@ tablet_stacking_to_char
 ```
 
 
-```@index
-```
-
-```@autodocs
-Modules = [TabletWeaving]
-```
-
 ### Tablet
 
 ```@docs
@@ -148,7 +141,6 @@ Whether **forward** rotation turns the card in the **ABCD** or the
 ```@docs
 RotationDirection
 rotation
-rotate!
 ABCD
 DCBA
 Clockwise
@@ -157,4 +149,95 @@ Forward
 Backward
 ```
 
+## Weaving
 
+To weave, the weaver first rotates the tablets according to some
+pattern.  Rotating the tablets opens a new shed.  The shuttle is then
+past through the new shed to finish weaving that row.
+
+```@docs
+rotate!
+shot!
+
+
+## Describing a Pattern
+
+How to Describe Tablet Motion During Weaving?
+
+After each throw, each tablet must be rotated **forward** or
+**backward** to make a new shed.  In the simplest patterns, all
+tablets are rotated in the same direction.  For our gray code pattern
+however, tablets move in different directions for each shed.  How can
+we represent these rotations for ease of execution by the weaver?
+
+There is one set of tablet motions for each throw of the shuttle.  We
+should have a row number.  The weaver must keep track of which row
+they're working.
+
+There is motion for each tablet.  The motion of a single tablet can be
+concisely described by unicode arrows (🡑, 🡓) or by the edge number of
+the tablet that is facing the shed or on top.  The latter is less
+error prone since an incorrect starting position for a tablet will be
+detected.
+
+The simplest representation is a `Vector` for the whole pattern.  Each
+element would be a `Vector` of digits from `1` to `4` indicating the
+edge of the tablet that's currently "on top".
+
+
+## Designing a Pattern
+
+### Simple Patterns
+
+```@docs
+simple_rotation_plan
+```
+
+### Going from an Image to a Pattern
+
+We have an array of the "image" we want to weave.  How do we translate
+that into a set of tablets, their warping, and their motions?
+
+How do we execute that "plan" to produce a stitch image to see how the
+pattern turned out.
+
+For a two color pattern, we can warp each tablet with one color in
+holes **A** and **C** and the other in holes **B** and **D**.
+Whatever the previous stitch, the tablet can be rotated to either
+color.  The slant of the stitch can't be controlled though.
+
+```@docs
+tablets_for_image
+```
+
+`tablets_for_image` does nothing about tablet threading, only colors.
+
+The tablet weaving patterns I've been all seem to have one threading
+on one side of the pattern and another threading on the other side,
+with the possible exception of the borders having different threading
+from the field.
+
+We can introduce a function that sets one threading from the edge to
+the middle and switches to the other threading for the other half.
+
+```@docs
+symetric_threading!
+```
+
+```@docs
+TabletWeavingPattern
+```
+
+
+
+
+
+
+
+
+```@index
+```
+
+```@autodocs
+Modules = [TabletWeaving]
+```

@@ -22,27 +22,29 @@ begin
 	using LinearAlgebra
 	using Parameters
 
-	include(joinpath(@__DIR__, "svg.jl"))  # Work around Pluto notebook ordering issue.
+    include(joinpath(@__DIR__, "util.jl"))
+    include(joinpath(@__DIR__, "elt.jl"))
+    include(joinpath(@__DIR__, "svg.jl"))
+    include(joinpath(@__DIR__, "tablets.jl"))
+    include(joinpath(@__DIR__, "pattern.jl"))
+    include(joinpath(@__DIR__, "tablet_charts.jl"))
+    include(joinpath(@__DIR__, "weave.jl"))
+    include(joinpath(@__DIR__, "pretty.jl"))
 end
-
-# ╔═╡ 581fda2d-0771-4283-8ca1-4b88cbeffecf
-# Given an array that represewnts an image we want to weave, which dimension
-# is the warp, and which is the weft?
-
-include(joinpath(@__DIR__, "util.jl"))
-
-# ╔═╡ 0baa4c77-bf7a-4d39-b964-d4636975f8fa
-include(joinpath(@__DIR__, "elt.jl"))
-
-# ╔═╡ bf12e28b-6bd1-45e3-9cea-e81d412c0097
-# Moved to tablets.jl
-
-include(joinpath(@__DIR__, "tablets.jl"))
 
 # ╔═╡ 89e97690-18a6-11ed-15e4-4bb0cd5b7c50
 md"""
 # Gray Code Tablet Weaving Pattern
 """
+
+# ╔═╡ 581fda2d-0771-4283-8ca1-4b88cbeffecf
+# Given an array that represewnts an image we want to weave, which dimension
+# is the warp, and which is the weft?
+
+# Moved to utils.jl.
+
+# ╔═╡ 0baa4c77-bf7a-4d39-b964-d4636975f8fa
+# Moved to elt.jl.
 
 # ╔═╡ 590963b9-bd0f-4c32-a778-873d22ec9c0f
 md"""
@@ -93,6 +95,9 @@ size(hcat(gray_sequence...))
 
 # ╔═╡ 31bdd4ca-aa24-4600-9a72-36410636019b
 # Moved to docs
+
+# ╔═╡ bf12e28b-6bd1-45e3-9cea-e81d412c0097
+# Moved to tablets.jl
 
 # ╔═╡ 40bd184d-3332-49c0-a349-64b4e5fcc4aa
 # Moved to runtests.jl.
@@ -168,41 +173,7 @@ where or which edge of the card faces the shed.
 # Moved to tablets.jl.
 
 # ╔═╡ ea0b660e-9512-4ad1-b99a-e17753f47d74
-"""
-    shot!(::Tablet)
-
-Apply the current rotation to the tablet and return the colors of the warp
-threads passing over the top and bottom of the fabric, and the crossing
-direction (as a forward or backslash character) when looking at that face
-of the fabric.
-"""
-function shot!(t::Tablet)
-	@assert(abs(t.this_shot_rotation) == 1,
-		"in shot!, this_shot_rotation = $(t.this_shot_rotation)")
-	te = top_edge(t)
-	be = opposite(te)
-	t.accumulated_rotation += t.this_shot_rotation
-	t.min_rotation = min(t.min_rotation, t.accumulated_rotation)
-	t.max_rotation = min(t.max_rotation, t.accumulated_rotation)
-	hole = if t.this_shot_rotation > 0
-		if t.threading isa BackToFront
-			stitchslant = '/'
-		else
-			stitchslant = '\\'
-		end
-		previous_hole
-	else
-		if t.threading isa BackToFront
-			stitchslant = '\\'
-		else
-			stitchslant = '/'
-		end
-		next_hole
-	end
-	t.this_shot_rotation = 0
-	wc(edge) = warp_color(t, hole(edge))
-	return wc(te), wc(be), stitchslant
-end
+# Moved to tablets.jl.
 
 # ╔═╡ 776e4a65-62f7-4201-b8e5-6d5326e653fa
 md"""
@@ -232,66 +203,13 @@ md"""
 """
 
 # ╔═╡ a24eae67-f116-4c75-8fda-b942dab326c7
-"""
-    csscolor(color)
-return (as a string) the CSS representation of the color.
-"""
-function csscolor end
+# Moved to utils.jl.
 
 # ╔═╡ 3c10060e-f2e1-4a05-8322-65009f5ef14e
-begin
-	function csscolor(color::RGB)
-		css(x) = Int(round(x * 255))
-		"rgb($(css(color.r)), $(css(color.g)), $(css(color.b)))"
-	end
-
-	csscolor(color::Colorant) =	"#$(hex(color))"
-end
+# Moved to utils.jl.
 
 # ╔═╡ c4804cf2-85ba-4895-8404-47560df04e2f
-function chart_tablet(tablet::Tablet; size=5, x=0)
-    @assert tablet.accumulated_rotation == 0
-    @assert tablet.this_shot_rotation == 0
-    function swatch(i, c)
-        elt("rect",
-            :width => "$(size)mm",
-            :height => "$(size)mm",
-            :x => "$(x)mm",
-            :y => "$(i * size)mm",
-            :fill =>"$(csscolor(c))",
-            :stroke => "gray")
-    end
-    function threading(th)
-        x1 = x
-        x2 = x1 + size
-        y1 = 4 * size
-        y2 = 5 * size
-        # The direction that the thread passed through the card if the card
-        # is facing to the right (FrontToTheRight stacking)
-        if th isa BackToFront
-            elt("line",
-                :stroke => "gray",
-                :strokeWidth =>"3px",
-                :x1 => "$(x1)mm",
-                :y1 => "$(y1)mm",
-                :x2 => "$(x2)mm",
-                :y2 => "$(y2)mm")
-        else
-            elt("line",
-                :stroke => "gray",
-                :strokeWidth => "5px",
-                :x1 => "$(x2)mm",
-                :y1 => "$(y1)mm",
-                :x2 => "$(x1)mm",
-                :y2 => "$(y2)mm" )
-        end
-    end
-    elt("svg", :xmlns => "http://www.w3.org/2000/svg",
-        elt("g",
-            swatch(0, tablet.a), swatch(1, tablet.b),
-            swatch(2, tablet.c), swatch(3, tablet.d),
-            threading(tablet.threading)))
-end
+# moved to tablet_charts.jl.
 
 # ╔═╡ fd40ecf7-83cb-43b5-b87c-8273f8fd32c4
 HTML(string((chart_tablet(
@@ -303,15 +221,7 @@ HTML(string((chart_tablet(
     x=10))))
 
 # ╔═╡ 22c96c85-2344-46bc-a64c-460414575677
-function chart_tablets(tablets::Vector{<:Tablet})
-    size = 5
-    elt("svg",
-	:xmlns => "http://www.w3.org/2000/svg",
-	:width => "95%",
-	# :viewBox => "0 0 $(length(tablets) * size) $(5 * size)",
-	[ chart_tablet(tablet; size=size, x=size*(i-1))
-	  for (i, tablet) in enumerate(tablets) ]...)
-end
+# moved to tablet_charts.jl.
 
 # ╔═╡ 418c2904-d16a-4c2d-a02f-c069918dca4c
 md"""
@@ -431,97 +341,13 @@ make_chevron_tablets()
 HTML(string(chart_tablets(make_chevron_tablets())))
 
 # ╔═╡ 38e5dcdb-e192-4c89-9e49-c8a5ad2fcb3c
-"""
-    simple_rotation_plan(row_count::Int, rotation_direction::RotationDirection)
-
-return a simple rotation plan function, as could be passed to `tablet_weaving`.
-"""
-function simple_rotation_plan(row_count::Int, rotation_direction::RotationDirection)
-	function plan(tablets::Vector{<:Tablet}, row_number::Int, tablet_number::Int)
-		if row_number <= row_count
-			return rotation_direction
-		else
-			return nothing
-		end
-	end
-end
+# Moved to pattern.jl.
 
 # ╔═╡ cacc40ec-08f8-4b92-ac40-e1496ccd9410
-"""
-	tablet_weave(tablets::Vector{<:Tablet}, rotation_plan)
-
-Simulate the weaving of and item that is warped according to `tablets` and is
-woken according to `rotation_plan`.
-
-`rotation_plan` is a function of three arguments:
-
-* a vector of the tablets;
-
-* the row number of the warp being formed;
-
-* the number of the tablet, counted from the weaver's left.
-
-It should return a RotationDirection.
-
-`tablet_weave` rotates the tablets according to the plan function, steping the
-row number until `rotation_plan` returns `nothing`.
-
-`tablet_weave` returns several values:
-
-* an array of the stitch color and slant, from which an image of the top face of the result can be made;
-
-* the same, but for the bottom face of the result;
-
-* a vector with one element per weft row, each element of which is a vector with
-one element per tablet, giving the rotation that was applied to that tablet and its new top edge after applying that rotation, as a tuple.
-
-"""
-function tablet_weave(tablets::Vector{<:Tablet}, rotation_plan)
-	tapestry_top = []
-	tapestry_bottom = []
-	instructions = []
-	row = 1
-	while true
-		rotations = []
-		for column in 1 : length(tablets)
-			rot = rotation_plan(tablets, row, column)
-			if rot == nothing
-				@goto done
-			end
-			rotate!(tablets[column], rot)
-			push!(rotations, rot)
-		end
-		weave = shot!.(tablets)
-		push!(tapestry_top, map(weave) do (top, bottom, slant)
-			(top, slant)
-		end)
-		push!(tapestry_bottom, map(weave) do (top, bottom, slant)
-			(bottom, slant)
-		end)
-		push!(instructions, collect(zip(rotations, top_edge.(tablets))))
-		row += 1
-	end
-	@label done
-	return tapestry_top, tapestry_bottom, instructions
-end
+# Moved to weave.jl.
 
 # ╔═╡ 517d7d7a-c31d-4917-8db9-ff7eb68e1bd5
-"""
-	weaving_image(face; stitchlength = 5, stitchwidth = 3, blank = Gray(0.25))
-
-Return an image array derived from `face`. which is as would be returned as the
-first or second return value of `tablet_weave`.
-"""
-function weaving_image(face;
-		stitchlength = 5, stitchwidth = 3, blank = Gray(0.25))
-	vcat(map(face) do row
-		hcat(map(row) do w
-			color, slant = w
-			color_stitch(stitch_image(stitchlength, stitchwidth, slant),
-						 color, blank)
-		end...)
-	end)
-end
+# Moved to pretty.jl.
 
 # ╔═╡ 454626a9-f96b-4d2d-adff-1cc24e2b423f
 let
@@ -587,272 +413,40 @@ let
 end
 
 # ╔═╡ ee85e6c6-2ade-4178-8850-55e776916ac1
-md"""
-## How to Describe Tablet Motion During Weaving
-
-After each throw, each tablet must be rotated **forward** or **backward** to make
-a new shed.  In the simplest patterns, all tablets are rotated in the same
-direction.  For our gray code pattern however, tablets move in different
-directions for each shed.  How can we represent these rotations for ease of
-execution by the weaver?
-
-There is one set of tablet motions for each throw of the shuttle.  We should have
-a row number.  The weaver must keep track of which row they're working.
-
-There is motion for each tablet.  The motion of a single tablet can be concisely
-described by unicode arrows (🡑, 🡓) or by the edge number of the tablet that is
-facing the shed or on top.  The latter is less error prone since an incorrect
-starting position for a tablet will be detected.
-
-The simplest representation is a `Vector` for the whole pattern.
-Each element would be a `Vector` of digits from `1` to `4` indicating the edge
-of the tablet that's currently "on top".
-"""
+# Moved to docs.
 
 # ╔═╡ 910c1e57-f7f0-4cb9-aa6c-826ff71e7b3a
-md"""
-## Generating a Pattern
-
-We have an array of the "image" we want to weave.  How do we translate that into
-a set of tablets, their warping, and their motions?
-
-How do we execute that "plan" to produce a stitch image to see how the pattern
-turned out.
-
-For a two color pattern, we can warp each tablet with one color in holes **A**
-and **C** and the other in holes **B** and **D**.  Whatever the previous stitch,
-the tablet can be rotated to either color.  The slant of the stitch can't be
-controlled though.
-"""
+# Moved to docs.
 
 # ╔═╡ 6dc90672-f80e-4e2c-9689-7e777b03ff8d
-"""
-    tablets_for_image(image)
-
-Return a `Vector` of the `Tablet`s that could be used to weave the image, which should
-be a two dimensional array.  If the tablets can't be determined then an error is
-thrown.
-The first dimension of `image` counts rows of weft.  The second dimension counts
-columns of warp, and therefore, tablets.
-"""
-function tablets_for_image(image)
-	@assert length(size(image)) == 2
-	cardcount = size(image)[2]
-	throwcount = size(image)[1]
-	@assert cardcount < throwcount
-	# The possible colors for each "column" of warp:
-	colors = [OrderedSet{Color}() for i in 1:cardcount]
-	for rownum in 1:throwcount
-		for cardnum in 1:cardcount
-			push!(colors[cardnum], image[rownum, cardnum])
-		end
-	end
-	@assert all(x -> x > 0 && x <= 2, map(length, colors))
-	map(colors) do c
-		if length(c) == 1
-			Tablet(a = c[1], b = c[1], c = c[1], d = c[1])
-		else
-			Tablet(a = c[1], b = c[2], c = c[1], d = c[2])
-		end
-	end
-end
+# Moved to pattern.jl.
 
 # ╔═╡ 24a0fb03-3cf5-46a2-83bc-92e2607a9216
-md"""
-`tablets_for_image` does nothing about tablet threading, only colors.
-
-The tablet weaving patterns I've been all seem to have one threading on one
-side of the pattern and another threading on the other side, with the
-possible exception of the borders having different threading from the field.
-
-We can introduce a function that sets one threading from the edge to the middle
-and switches to the other threading for the other half.
-"""
+# Moved to docs.
 
 # ╔═╡ f1f10056-0810-47cf-919b-b6aa93b361e0
-function symetric_threading!(tablets::Vector{<:Tablet};
-							 leftthreading::TabletThreading = BackToFront())
-	l = length(tablets)
-	middle = floor(Int, l / 2)
-	for i in 1 : middle
-		left = tablets[i]
-		right = tablets[l + 1 - i]
-		left.threading = leftthreading
-		right.threading = other(leftthreading)
-	end
-	tablets
-end
+# Moved to pattern.jl.
 
 # ╔═╡ 02798c2e-3d12-4eff-90f8-e24a631ad8f0
-"""
-	want_color(::Tablet, color)
+# Moved to pattern.jl.
 
-return the new top edge if the tablet is rotated so that the stitch
-will come out the specified color.  `want_color` is used to turn an
-image into a weaving pattern.
-"""
-function want_color(tablet::Tablet{T}, color::T) where T
-	e = top_edge(tablet)
-	c_next = warp_color(tablet, next_hole(e))
-	c_prev = warp_color(tablet, previous_hole(e))
-	# If both colors are the same, which direction should we prefer?
-	# Probably the one that is towards 0 accumulated twist.
-	want_rotation =
-		if c_next == c_prev
-			- sign(tablet.accumulated_rotation)
-		elseif color == c_next
-			-1
-		elseif color == c_prev
-			1
-		else
-			error("Can't match color $c with tablet $tablet.")
-		end
-	if want_rotation == 0
-		want_rotation = 1
-	end
-	new_edge = if want_rotation == 1
-		previous(e)
-	else
-		next(e)
-	end
-	rot::RotationDirection = Forward()
-	for r in [Forward(), Backward()]
-		if rotation(tablet, r) == want_rotation
-			rot = r
-			break
-		end
-	end
-	return new_edge, rot
-end
+# ╔═╡ 432d26a6-bac4-48b8-a0ab-1bb1c246d513
+# Moved to runtests.jl.
+
+# ╔═╡ 8d8e5ec7-3177-4e64-ab6d-791dbf0a06c4
+# Moved to pretty.jl.
+
+# ╔═╡ 2f1e5906-300d-4c35-84a4-4b1ced9390b7
+# Moved to pretty.jl.
 
 # ╔═╡ a38a5557-7a7d-49d3-8041-7a6d655e6a37
-function pretty_stitches(image_stitches, flip_right_to_left::Bool)
-    # image_stitches should be the top_image_stitches or bottom_image_stitches
-    # of a TabletWeavingPattern.
-    stitch_width = 2
-    stitch_length = 3
-    stitch_diameter = 1
-    uses = []
-    function use(row, col, color, slant)
-        push!(uses,
-              elt("use",
-	          :href => slant == '/' ? "#stitch1" : "#stitch2",
-	          :x => "$(col * stitch_width)",
-	          :y => "$(row * stitch_length)",
-	          :width => "$(stitch_width)",
-	          :height => "$(stitch_length)",
-	          :style => "stroke: none; fill: $(csscolor(color)); vector-effect: non-scaling-stroke"))
-    end
-    for (rownum, row) in enumerate(image_stitches)
-	for (colnum, stitch) in enumerate(row)
-	    (color, slant) = stitch
-	    use(rownum, colnum, color, slant)
-	end
-    end
-    println(length(uses))
-    viewbox_width = stitch_width * length(image_stitches[1])
-    viewbox_height = stitch_length * length(image_stitches)
-    elt("svg", 
-        :viewBox => "0 0 $viewbox_width $viewbox_height",
-        elt("g",
-   	    elt("symbol",
-                :id => "stitch1",
-    	        :preserveAspectRatio => "xMinYMin",
-    	        :viewBox => "0 0 $(stitch_width) $(stitch_length)",
-                :refX => "0",
-                :refY => "0",
-    	        svg_stitch(stitch_width, stitch_length, stitch_diameter, '/';),),
-            elt("symbol",
-                :id => "stitch2",
-    	        :preserveAspectRatio => "xMinYMin",
-    	        :viewBox => "0 0 $(stitch_width) $(stitch_length)",
-    	        :refX => "0",
-                :refY => "0",
-    	        svg_stitch(stitch_width, stitch_length, stitch_diameter, '\\';),),
-            uses...))
-end
+# Moved to pretty.jl.
 
 # ╔═╡ 89da550c-c4fb-4b31-8f28-1e4bbc707ec2
 svg_stitch(5, 10, 1, '/';)
 
 # ╔═╡ ad13c3e7-5102-4f7d-99d1-6deea22a2ec5
-begin
-	struct TabletWeavingPattern{C} # where C causes "invalid type signature" error
-		title::AbstractString
-		image::Array{C, 2}
-		initial_tablets::Vector{<:Tablet{<:C}}
-		weaving_steps
-		end_tablets
-		# top_image_stitches and bottom_image_stitches each are a vector
-		# (one element per row) of vectors (one element per stitch) of the
-		# stitch color and slant, from which an image of the top or bottom
-		# face of the result can be made:
-		top_image_stitches
-		bottom_image_stitches
-	end
-
-	function rotation_plan_from_image(image, tablets)
-		tablets = copy.(tablets)
-		function plan(tablets, row, column)
-			if row > size(image)[1]
-				return nothing
-			end
-			color = image[row, column]
-	    	(edge, rotation) = want_color(tablets[column], color)
-	    	rotation
-		end
-		plan
-	end
-	
-	function TabletWeavingPattern(title::AbstractString, image;
-			threading_function = identity)
-		image = longer_dimension_counts_weft(image)
-		initial_tablets = threading_function(tablets_for_image(image))
-		tablets = copy.(initial_tablets)
-		top, bottom, instructions =
-			tablet_weave(tablets, rotation_plan_from_image(image, tablets))
-		
-		TabletWeavingPattern(title, image, initial_tablets, instructions, tablets,
-			top, bottom)
-	end
-end
-
-# ╔═╡ 2f1e5906-300d-4c35-84a4-4b1ced9390b7
-function pretty_plan(p::TabletWeavingPattern)
-    summary(heading, reader) =
-        elt("tr",
-            elt("th", :align => "right", heading),
-            map(p.end_tablets) do t
-                elt("td", :align => "right", reader(t))
-            end...)
-    elt("table",
-        # Each row of the plan
-        [ elt("tr",
-              elt("th", :align => "right", i),
-              [ elt("td", :align => "right",
-                    tablet_rotation_char(t[1]),
-                    t[2].label)
-                for t in step
-                    ]...)
-          for (i, step) in enumerate(p.weaving_steps)
-              ]...,
-        # End summary:
-        summary("end", t -> t.accumulated_rotation),
-        summary("min", t -> t.min_rotation),
-        summary("max", t -> t.max_rotation))
-end
-
-# ╔═╡ 8d8e5ec7-3177-4e64-ab6d-791dbf0a06c4
-function pretty(p::TabletWeavingPattern)
-    elt("div",
-	elt("h2", p.title),
-	elt("div", chart_tablets(p.initial_tablets)),
-	elt("div", pretty_plan(p)),
-	elt("h3", "Front"),
-	pretty_stitches(p.top_image_stitches, false),
-	elt("h3", "Back"),
-	pretty_stitches(p.bottom_image_stitches, true))
-end
+# Moved to pattern.jl.
 
 # ╔═╡ 4d45dbf1-41cf-4568-b099-789630effce3
 tablets(p::TabletWeavingPattern) = copy.(p.initial_tablets)
@@ -1042,18 +636,6 @@ end
 # ╔═╡ 2b6d73bc-dd88-4f4a-b739-58d57b189df6
 HTML(string(chart_tablets(GRAY_TABLETS)))
 
-# ╔═╡ 432d26a6-bac4-48b8-a0ab-1bb1c246d513
-let
-	tablet = GRAY_TABLETS[5]
-	red = tablet.a
-	yellow = tablet.b
-	red, yellow #=
-	@assert want_color(tablet, red) == (TabletEdge(4), Forward())
-	@assert want_color(tablet, yellow) == (TabletEdge(2), Backward())
-	html"want_color tests pass."
-	=#
-end
-
 # ╔═╡ bec2540b-b3e8-47a7-b968-769b8765d9ef
 WOVEN_GRAY_PATTERN = TabletWeavingPattern("Gray Code Pattern", GRAY_WEAVE;
 	threading_function = symetric_threading!)
@@ -1089,7 +671,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.0"
 manifest_format = "2.0"
-project_hash = "7ad9e49ee09d8dae783cecd63b42ead807201d89"
+project_hash = "efc6b3830346be103f6d30aed535d4c945e051eb"
 
 [[deps.AbstractTrees]]
 git-tree-sha1 = "5c0b629df8a5566a06f5fef5100b53ea56e465a0"
