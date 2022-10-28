@@ -7,6 +7,12 @@ CurrentModule = TabletWeaving
 Documentation for [TabletWeaving](https://github.com/MarkNahabedian/TabletWeaving.jl).
 
 
+```@contents
+Pages = [ "index.md" ]
+Depth = 6
+```
+
+
 ## Tablets
 
 A tablet or card is a square piece of card stock.
@@ -158,6 +164,7 @@ past through the new shed to finish weaving that row.
 ```@docs
 rotate!
 shot!
+
 
 
 ## Describing a Pattern
