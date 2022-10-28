@@ -1,22 +1,4 @@
-export weaving_image
-
-
-"""
-    weaving_image(face; stitchlength = 5, stitchwidth = 3, blank = Gray(0.25))
-
-Return an image array derived from `face`. which is as would be returned as the
-first or second return value of `tablet_weave`.
-"""
-function weaving_image(face;
-		       stitchlength = 5, stitchwidth = 3, blank = Gray(0.25))
-    vcat(map(face) do row
-	     hcat(map(row) do w
-		      color, slant = w
-		      color_stitch(stitch_image(stitchlength, stitchwidth, slant),
-				   color, blank)
-		  end...)
-	 end)
-end
+export pretty_stitches, pretty_plan, pretty
 
 
 function pretty_stitches(image_stitches, flip_right_to_left::Bool)

@@ -350,11 +350,13 @@ HTML(string(chart_tablets(make_chevron_tablets())))
 # Moved to pretty.jl.
 
 # ╔═╡ 454626a9-f96b-4d2d-adff-1cc24e2b423f
+#=  stitch_image is obsolete.
 let
 	top, bottom, instructions =
 		tablet_weave(make_chevron_tablets(), simple_rotation_plan(16, Forward()))
 	weaving_image(top), weaving_image(bottom)
 end
+=#
 
 # ╔═╡ eef97e76-284b-456f-9ad8-9b86d87d6954
 # Lets try a different pottern, from http://research.fibergeek.com/2002/10/10/first-tablet-weaving-double-diamonds/
@@ -406,11 +408,13 @@ length(make_diamond_tablets())
 HTML(string(chart_tablets(make_diamond_tablets())))
 
 # ╔═╡ 93497aa8-ba19-45fe-a596-dd5ef194229f
+#= stitch_image is obsolete
 let
 	top, bottom, instructions =
 		tablet_weave(make_diamond_tablets(), simple_rotation_plan(16, Forward()))
 	weaving_image(top), weaving_image(bottom)
 end
+=#
 
 # ╔═╡ ee85e6c6-2ade-4178-8850-55e776916ac1
 # Moved to docs.
