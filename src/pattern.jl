@@ -1,10 +1,11 @@
 export simple_rotation_plan, tablets_for_image, symetric_threading!
+export rotation_plan_from_image, TabletWeavingPattern
 
 
 """
     simple_rotation_plan(row_count::Int, rotation_direction::RotationDirection)
 
-return a simple rotation plan function, as could be passed to `tablet_weaving`.
+Return a simple rotation plan function, as could be passed to [`tablet_weave`](@ref).
 """
 function simple_rotation_plan(row_count::Int, rotation_direction::RotationDirection)
     function plan(tablets::Vector{<:Tablet}, row_number::Int, tablet_number::Int)
@@ -121,10 +122,10 @@ TabletWeavingPattern represents a single tablet weaving project, from
 initial target image to tablets to pattern to images of the expected
 result.
 """
-struct TabletWeavingPattern{C} # where C causes "invalid type signature" error
+struct TabletWeavingPattern # {C} # where C causes "invalid type signature" error
     title::AbstractString
-    image::Array{C, 2}
-    initial_tablets::Vector{<:Tablet{<:C}}
+    image # ::Union{Nothing, Array{C, 2}}
+    initial_tablets # ::Vector{<:Tablet{F} where {F <: C}}
     weaving_steps
     end_tablets
     # top_image_stitches and bottom_image_stitches each are a vector

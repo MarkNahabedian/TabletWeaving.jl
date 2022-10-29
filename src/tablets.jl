@@ -158,7 +158,7 @@ Return the character ('s' or 'z' corresponding to the specified tablet
 threading.  See `threading_for_char`.
 """
 threading_char(::BackToFront) = '\u2571'
-threading_char(::BackToFront) = '\u2572'
+threading_char(::FrontToBack) = '\u2572'
 
 
 ############################################################
@@ -219,8 +219,7 @@ weaving card.
     max_rotation = 0
 end
 
-function copy(t::Tablet)
-    @assert t.id == nothing
+function Base.copy(t::Tablet)
     @assert t.accumulated_rotation == 0
     @assert t.this_shot_rotation == 0
     @assert t.min_rotation == 0

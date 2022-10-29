@@ -16,6 +16,7 @@ makedocs(;
     ),
     pages=[
         "Home" => "index.md",
+        "Simple Example" => "examples/simple_chevron.md"
     ],
 )
 

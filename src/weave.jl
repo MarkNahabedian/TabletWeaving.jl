@@ -14,7 +14,8 @@ woven according to `rotation_plan`.
 
 * the number of the tablet, counted from the weaver's left.
 
-It should return a RotationDirection.
+It should return a RotationDirection, or `nothing` if the row number
+is past the end of the pattern.
 
 `tablet_weave` rotates the tablets according to the plan function, steping the
 row number until `rotation_plan` returns `nothing`.
