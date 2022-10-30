@@ -11,7 +11,7 @@ makedocs(;
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
         canonical="https://MarkNahabedian.github.io/TabletWeaving.jl",
-        edit_link="master",
+        edit_link="main",
         assets=String[],
     ),
     pages=[
@@ -22,5 +22,5 @@ makedocs(;
 
 deploydocs(;
     repo="github.com/MarkNahabedian/TabletWeaving.jl",
-    devbranch="master",
+    devbranch="main",
 )
