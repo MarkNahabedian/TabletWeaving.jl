@@ -73,14 +73,51 @@ function pretty_plan(p::TabletWeavingPattern)
 end
 
 
+TABLET_THREADING_PROSE = """
+The chart below shows how each tablet should be threaded.  The four
+rows of colors are for the A, B, C and D holes respectively.
+
+The threading direction indicated by the diagonal line in the 5th row.
+When looking from the cloth beam towards the warp beam with the
+tablets facing to one's right, the direction of the diagonal line
+shows how each thread should pass through the tablet.
+"""
+
+PATTERN_WEAVING_PROSE = """
+This nextchart shows how each row shoulf be woven.
+
+The first column is the row number.  This is followed by a separate
+column for each tablet.  For a given tablet, 
+
+🡑 indicates that the tablet should be rotated forward, and 
+🡓 indicates that the tablet should be rotated backward.
+
+The number after the arrow says which edge of the tablet should be on
+top after the rotation.  This can be used to verify that all tablets
+are in the right place before throwing the weft.
+"""
+
+RENDERING_PROSE = """
+Below is a rendering of what we anticipate the resulting weave might
+look like.
+"""
+
 function pretty(p::TabletWeavingPattern)
     elt("div",
 	elt("h2", p.title),
+        elt("p", TABLET_THREADING_PROSE),
 	elt("div", chart_tablets(p.initial_tablets)),
+        elt("p", PATTERN_WEAVING_PROSE),
 	elt("div", pretty_plan(p)),
-	elt("h3", "Front"),
-	pretty_stitches(p.top_image_stitches, false),
-	elt("h3", "Back"),
-	pretty_stitches(p.bottom_image_stitches, true))
+        elt("p", RENDERING_PROSE),
+        elt("table", :width=>"60%",
+            elt("tr",
+                elt("th", "Front"),
+                elt("th", "Back")),
+            elt("tr",
+                elt("td",
+	            pretty_stitches(p.top_image_stitches, false),),
+                elt("td",
+	            pretty_stitches(p.bottom_image_stitches, true)))))
 end
 

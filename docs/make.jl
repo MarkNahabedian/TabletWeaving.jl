@@ -16,7 +16,10 @@ makedocs(;
     ),
     pages=[
         "Home" => "index.md",
-        "Simple Example" => "examples/simple_chevron.md"
+        "Examples" => Any[
+            "Simple Example" => "examples/simple_chevron.md",
+            "From an Image" => "examples/from_an_image.md"
+        ]
     ],
 )
 
