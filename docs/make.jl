@@ -18,7 +18,8 @@ makedocs(;
         "Home" => "index.md",
         "Examples" => Any[
             "Simple Example" => "examples/simple_chevron.md",
-            "From an Image" => "examples/from_an_image.md"
+            "From an Image" => "examples/from_an_image.md",
+            "Weaving Text" => "examples/text.md"
         ]
     ],
 )

@@ -95,6 +95,9 @@ column for each tablet.  For a given tablet,
 The number after the arrow says which edge of the tablet should be on
 top after the rotation.  This can be used to verify that all tablets
 are in the right place before throwing the weft.
+
+The last three rows show the final, minimum and maximum accumulated
+twist for each tablet.
 """
 
 RENDERING_PROSE = """

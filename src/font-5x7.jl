@@ -1,6 +1,8 @@
 # From:
 # http://scruss.com/wordpress/wp-content/uploads/2017/03/IBM029-Field-Eng-Maint-Man-p65-code-key.jpg
 
+export FONT_5x7
+
 FONT_5x7 = Dict{AbstractChar, Array{UInt8, 2}}()
 
 function defchar(char::AbstractChar, pattern::String)
