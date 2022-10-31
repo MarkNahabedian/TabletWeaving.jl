@@ -110,14 +110,14 @@ function pretty(p::TabletWeavingPattern)
         elt("p", PATTERN_WEAVING_PROSE),
 	elt("div", pretty_plan(p)),
         elt("p", RENDERING_PROSE),
-        elt("table", :width=>"60%",
+        elt("table", :width=>"80%",
             elt("tr",
                 elt("th", "Front"),
                 elt("th", "Back")),
             elt("tr",
-                elt("td",
+                elt("td", :width=>"40%",
 	            pretty_stitches(p.top_image_stitches, false),),
-                elt("td",
+                elt("td", :width=>"40%",
 	            pretty_stitches(p.bottom_image_stitches, true)))))
 end
 
