@@ -154,3 +154,36 @@ using Colors
     end
 
 end
+
+using Logging
+
+@testset "Composition" begin
+    a = [ 1 2 3; 4 5 6]
+    b = [7 8; 9 10; 11 12]
+
+    @test size(TabletWeaving.padding(a, safe_hcat, 0, 0), 1)  == 0
+
+    @test TabletWeaving.padding(a, safe_hcat, 2, 0) == [0 0 0; 0 0 0]
+
+    @test (AlignHeads())(safe_hcat, a, 2, 0) ==
+        [1 2 3; 4 5 6; 0 0 0; 0 0 0]
+    @test (AlignTails())(safe_hcat, a, 2, 0) ==
+        [0 0 0; 0 0 0; 1 2 3; 4 5 6]
+    @test (AlignCenters())(safe_hcat, a, 2, 0) ==
+        [0 0 0; 1 2 3; 4 5 6; 0 0 0]
+
+    @test safe_hcat(AlignHeads(), 0, a, b) ==
+        [
+            1 2 3 7 8;
+            4 5 6 9 10;
+            0 0 0 11 12
+        ]
+    @test safe_hcat(AlignTails(), 0, a, b) ==
+        [
+            0 0 0 7 8;
+            1 2 3 9 10;
+            4 5 6 11 12
+        ]
+
+end
+

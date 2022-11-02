@@ -18,6 +18,8 @@ include("svg.jl")
 include("tablet_charts.jl")
 include("pretty.jl")
 
+include("composition.jl")
+
 include("image_data_uri.jl")
 include("font-5x7.jl")
 

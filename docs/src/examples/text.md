@@ -8,22 +8,15 @@ using TabletWeaving
 
 dotmatrix(c) = FONT_5x7[c]
 
-function spaceing(v)
-    space = zeros(Int, 7)
-    result = []
-    for m in v
-        if length(result) > 0
-            push!(result, space)
-        end
-        push!(result, m)
-    end
-    result
-end
-
 color(bit) = [ RGB(1, 1, 1), RGB(0, 0, 0) ][bit + 1]
 
 compose_line(line) =
-    hcat(spaceing([dotmatrix(c) for c in line])...)
+    safe_hcat(AlignCenters(), UInt8(0),
+              insert_between(
+                  # render characters in font:
+                  dotmatrix.(collect(line)),
+                  # One "pixel" spacing between characters:
+                  blank_swatch(UInt8(0))))
 
 color.(compose_line("HELLO!"))
 ```
@@ -33,6 +26,7 @@ We can also compose multiple lines:
 ```@example 1
 using Base.Iterators
 
+#=
 function compose(composed_lines; leading=1, align=0)
     len(line) = size(line)[2]
     padded_lines = []
@@ -62,11 +56,17 @@ function compose(composed_lines; leading=1, align=0)
     end
     vcat(padded_lines...)
 end
+=#
 
-MESSAGE = color.(compose(compose_line.(["THIS IS", "A TEST"]); leading=2))
+MESSAGE = color.(
+  safe_vcat(AlignCenters(), 0,
+            insert_between(
+                compose_line.(["THIS IS",
+                               "A TEST"]),
+                fill(0, 2, 1))))
 ```
 
-How might it  look woven:
+How might it look woven:
 
 ```@example 1
 WOVEN = 
