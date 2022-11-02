@@ -4,6 +4,9 @@ export pretty_stitches, pretty_plan, pretty
 function pretty_stitches(image_stitches, flip_right_to_left::Bool)
     # image_stitches should be the top_image_stitches or bottom_image_stitches
     # of a TabletWeavingPattern.
+    # In those Arrays, row 1 is at the top, but when woven,
+    # the first row is at the bottom:
+    image_stitches = reverse(image_stitches, dims=1)
     stitch_width = 2
     stitch_length = 3
     stitch_diameter = 1
@@ -103,6 +106,9 @@ twist for each tablet.
 RENDERING_PROSE = """
 Below is a rendering of what we anticipate the resulting weave might
 look like.
+
+Note that, for proper rendering, row 1 of the pattern is at the
+bottom of each of these images.
 """
 
 function pretty(p::TabletWeavingPattern)
