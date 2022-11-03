@@ -3,7 +3,13 @@
 
 export FONT_5x7
 
-FONT_5x7 = Dict{AbstractChar, Array{UInt8, 2}}()
+"""
+    FONT_5x7
+
+Contains 5 wide by 7 7high dot matrix bitmap images of
+uppercase letters, digits and punctuation.  Indexed by Char.
+"""
+const FONT_5x7 = Dict{AbstractChar, Array{UInt8, 2}}()
 
 function defchar(char::AbstractChar, pattern::String)
     a = zeros(UInt8, 7, 5)

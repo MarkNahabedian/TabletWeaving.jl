@@ -164,7 +164,7 @@ past through the new shed to finish weaving that row.
 ```@docs
 rotate!
 shot!
-
+```
 
 
 ## Describing a Pattern
@@ -235,16 +235,54 @@ symetric_threading!
 TabletWeavingPattern
 ```
 
+## Composition
 
+We might want to combine a number of graphical elements in our weaving
+design.  Some utilities are provided to support this.
 
+`safe_hcat` and `safe_vcar` can be used to combine multiple images
+horizontally or vertically.  These are just instances of (an
+instantiable subtype of) [`SwatchComposer`](@ref).
 
+```@docs
+SwatchComposer
+HorizontalComposer
+safe_hcat
+VerticalComposer
+safe_vcat
+SwatchAlignment
+AlignHeads
+AlignCenters
+AlignTails
+insert_between
+```
 
+## Text
 
+A simple dot matrix font is provided so that we can include text in
+our designs.
 
+```@docs
+compose_line
+FONT_5x7
+```
+
+## Everything
+
+```@docs
+svg_stitch
+other
+csscolor
+chart_tablets
+want_color
+tablet_weave
+chart_tablet
+longer_dimension_counts_weft
+TabletThreading
+```
+
+## Index
 
 ```@index
 ```
 
-```@autodocs
-Modules = [TabletWeaving]
-```
