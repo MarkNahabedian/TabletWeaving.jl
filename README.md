@@ -8,3 +8,7 @@ TabletWeaving.jl provides a library for designing patterns for tablet
 
 As part of this work, I needed to come up with some more rigorous
 vocabulary to help me get my head around this project.
+
+This code was originally developed in a Pluto notebook.  The change
+history of that notebook can be found at
+[https://github.com/MarkNahabedian/crafts/tree/migrate_tablet_weaving](https://github.com/MarkNahabedian/crafts/tree/migrate_tablet_weaving).
