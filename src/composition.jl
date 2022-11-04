@@ -30,7 +30,7 @@ abstract type SwatchAlignment end
 
 An instantiable subtype of [`SwatchAlignment`](#ref) that aligns the
 left or top edges of graphical elements when `safe_hcat` or
-`safe_vcat` is used.
+`safe_vcat` is used.  Padding is adddeed after the swatctch as needed.
 """
 struct AlignHeads <: SwatchAlignment end
 
@@ -40,7 +40,8 @@ struct AlignHeads <: SwatchAlignment end
 
 An instantiable subtype of [`SwatchAlignment`](#ref) that aligns the
 centers of graphical elements when `safe_hcat` or
-`safe_vcat` is used.
+`safe_vcat` is used.  Padding is added both before and after the swatch
+as needed.
 """
 struct AlignCenters <: SwatchAlignment end
 
@@ -50,7 +51,7 @@ struct AlignCenters <: SwatchAlignment end
 
 An instantiable subtype of [`SwatchAlignment`](#ref) that aligns the
 right or bottom edges of graphical elements when `safe_hcat` or
-`safe_vcat` is used.
+`safe_vcat` is used.  Padding is added before the swatch as needed.
 """
 struct AlignTails <: SwatchAlignment end
 
@@ -67,7 +68,7 @@ end
     (::SwatchAlignment)(::SwatchComposer, swatch::Array{Any, 2}, add,
                         padvalue)
 
-Add padding to `swatch` so that its sice will be compatible with 
+Add padding to `swatch` so that its size will be compatible with 
 those of other swatches when performing the SwatchComposer.
 `add` is the number of rows or columns to be added to `swatch`.
 The value of each element added in the padding is specified by `padvalue`.
@@ -137,19 +138,18 @@ padcat(::HorizontalComposer) = vcat
 padcat(::VerticalComposer) = hcat
 
 """
-    (c::SwatchComposer)(align::SwatchAlignment,
-                        padvalue, swatches)
+    (::SwatchComposer)(align::SwatchAlignment,
+                       padvalue, swatches)
 
 Return a single two dimensional array composed by juxtaposing the
 swatches according to `align`.  Swatches that are not compatible in
 size are padded with `padvalue`.
 
 `HorizontalComposer` composes the swatches horizontally -- along the
-length of the warp.  `safe_hcat` is an alias for this composes.
+length of the warp.  [`safe_hcat`](@ref) is an alias for this composer.
 
 `VerticalComposer` composes the swatches vertically -- across the
-width of the warp.  `safe_vcat` is an alias for this composes.
-
+width of the warp.  [`safe_vcat`](@ref) is an alias for this composer.
 """
 function (c::SwatchComposer)(align::SwatchAlignment,
                              padvalue, swatches)
@@ -170,10 +170,10 @@ end
 """
     insert_between(swatches, between)
 
-Intersperse `between` among swatches.
+Intersperse `between` among `swatches`.
 
 `swatches` is a vector of 2 dimenswional arrays that will be part of a
-tablet weaving pattern.  A new vector is retorned with `between`
+tablet weaving pattern.  A new vector is returned with `between`
 inserted between each two adjacent arrays from `swatches`.
 
 Suitable for adding spacing between letters or lines of text, but can

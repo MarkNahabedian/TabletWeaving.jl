@@ -31,7 +31,7 @@ struct TabletHole
 end
 
 """
-A TabletEdge` represents a single edge of a tablet.
+A `TabletEdge` represents a single edge of a tablet.
 """
 struct TabletEdge
     label::Int
@@ -45,6 +45,35 @@ end
 function modindex(index, seq)
     Int(mod(index - 1, length(seq)) + 1)
 end
+
+
+"""
+    next(::TabletHole)::TabletHole
+    next(::TabletEdge)::TabletEdge
+
+Return the next hole or edge from the argument, 
+clockwise around a tablet.
+"""
+function next end
+
+
+"""
+    previous(::TabletHole)::TabletHole
+    previous(::TabletEdge)::TabletEdge
+
+Return the previous hole or edge from the argument, 
+counterclockwise around a tablet.
+"""
+function previous end
+
+
+"""
+    opposite(::TabletHole)::TabletHole
+    opposite(::TabletEdge)::TabletEdge
+
+Return the opposite hole or edge from the argument.
+"""
+function opposite end
 
 
 next(elt, seq) =
@@ -89,7 +118,7 @@ end
 """
     previous_hole(::TabletEdge)
 
-Return the hole preceeding the specified hole.
+Return the hole preceeding the specified edge.
 """
 function previous_hole(edge::TabletEdge)::TabletHole
     label = edge.label
@@ -155,7 +184,7 @@ end
     threading_char(::TabletThreading)
 
 Return the character ('s' or 'z' corresponding to the specified tablet
-threading.  See `threading_for_char`.
+threading.  See [`threading_for_char`](@ref).
 """
 threading_char(::BackToFront) = '\u2571'
 threading_char(::FrontToBack) = '\u2572'
@@ -177,7 +206,7 @@ the tablet is stacked so that its front faces the weaver's right.
 struct FrontToTheRight <: TabletStacking end
 
 """
-In `FrontToTheRight` stacking, 
+In `FrontToTheLeft` stacking, 
 the tablet is stacked so that its front faces the weaver's left.
 """
 struct FrontToTheLeft <: TabletStacking end
@@ -255,7 +284,7 @@ end
     top_edge(::Tablet)::TabletEdge
 
 Return the TabletEdge of the top edge of the tablet.
-This edge is easier to see on the loom than the shed edge
+This edge is easier to see on the loom than the shed edge.
 It is also unaffected by the tablet's `stacking`.
 """
 function top_edge(t::Tablet)::TabletEdge
@@ -368,7 +397,7 @@ rotation(t::Tablet, ::DCBA) = -1
 """
 The `Clockwise` direction refers to how the tablet would move if its front or
 back face (depending on threading) were facing the weaver.  Whether this
-results in ABCD or DCBA rotation depends on how the card is threaded.
+results in ABCD or DCBA rotation depends on how the tablet is threaded.
 """
 struct Clockwise <: RotationDirection end
 
@@ -400,7 +429,7 @@ end
 
 """
 The Forward rotation moves the top corner of the tablet closest to the
-weaver and the cloth beam to be the bottom corner closest to the weaver.
+weaver and the cloth beam to be the top corner farthest from the weaver.
 """
 struct Forward <: RotationDirection end
 

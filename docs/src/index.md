@@ -61,11 +61,15 @@ TabletHole
 TabletEdge
 ```
 
-The functions `next`, `previous`and `opposite` can beapplied to a
+The functions [`next`](@ref), [`previous`](@ref), and [`opposite`](@ref)
+can be applied to a
 `TabletHole` or a `TabletEdge` to get the next, previous, or opposite
 one respectively.
 
 ```@docs
+next
+previous
+opposite
 next_hole
 previous_hole
 ```
@@ -73,8 +77,8 @@ previous_hole
 
 ### Tablet Threading
 
-How the warp threads pass through a tablet, the `TabletThreading`, can either be
-`BackToFront` or `FrontToBack`.
+How the warp threads pass through a tablet, the [`TabletThreading`](@ref),
+can either be [`BackToFront`](@ref) or [`FrontToBack`](@ref).
 
 for `BackToFront` threading, warp threads pass from the warp beam through the
 tablet from back to front and then to the cloth beam.
@@ -83,7 +87,7 @@ For `FrontToBack` threading, Warp threads pass from the warp beam through the
 tablet from front to back and then to the cloth beam.
 
 These threadings also have a concise textual representation.  `BackToFront` can
-be represented by `/`or `z`.  `BackToFront` can be represented by `\\` or `s`.
+be represented by `/` or `z`.  `FrontToBack` can be represented by `\\` or `s`.
 
 ```@docs
 BackToFront
@@ -101,7 +105,7 @@ arrahged so that their flat faces face each other.  This forms a horizontal
 stack from one side of the loom to the other.
 
 When stacked like this, a tablet is said to be stacked `FrontToTheRight` if
-it's front face faces towards the right side of the loom rom the weaver's
+it's front face faces towards the right side of the from the weaver's
 perspective. A tablet facing the opposite direction is said to be threaded
 `FrontToTheLeft`.
 
@@ -159,7 +163,7 @@ Backward
 
 To weave, the weaver first rotates the tablets according to some
 pattern.  Rotating the tablets opens a new shed.  The shuttle is then
-past through the new shed to finish weaving that row.
+passed through the new shed to finish weaving that row.
 
 ```@docs
 rotate!
@@ -169,11 +173,11 @@ shot!
 
 ## Describing a Pattern
 
-How to Describe Tablet Motion During Weaving?
+How should we describe tablet motion during weaving?
 
 After each throw, each tablet must be rotated **forward** or
 **backward** to make a new shed.  In the simplest patterns, all
-tablets are rotated in the same direction.  For our gray code pattern
+tablets are rotated in the same direction.  For more complicated patterns
 however, tablets move in different directions for each shed.  How can
 we represent these rotations for ease of execution by the weaver?
 
@@ -219,7 +223,7 @@ tablets_for_image
 
 `tablets_for_image` does nothing about tablet threading, only colors.
 
-The tablet weaving patterns I've been all seem to have one threading
+The tablet weaving patterns I've seen all seem to have one threading
 on one side of the pattern and another threading on the other side,
 with the possible exception of the borders having different threading
 from the field.
@@ -240,7 +244,7 @@ TabletWeavingPattern
 We might want to combine a number of graphical elements in our weaving
 design.  Some utilities are provided to support this.
 
-`safe_hcat` and `safe_vcar` can be used to combine multiple images
+[`safe_hcat`](@ref) and [`safe_vcat`](@ref) can be used to combine multiple images
 horizontally or vertically.  These are just instances of (an
 instantiable subtype of) [`SwatchComposer`](@ref).
 
@@ -267,7 +271,7 @@ compose_line
 FONT_5x7
 ```
 
-## Everything
+## Everything Else
 
 ```@docs
 svg_stitch

@@ -3,7 +3,7 @@ export chart_tablet, chart_tablets
 """
     chart_tablet(::Tablet; size=5, x=0)
 
-Return an SVG elementthat describes how the tablet is threaded.
+Return an SVG element that describes how the tablet is threaded.
 """
 function chart_tablet(tablet::Tablet; size=5, x=0)
     @assert tablet.accumulated_rotation == 0

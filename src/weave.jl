@@ -3,7 +3,7 @@ export tablet_weave
 """
     tablet_weave(tablets::Vector{<:Tablet}, rotation_plan)
 
-Simulate the weaving of and item that is warped according to `tablets` and is
+Simulate the weaving of an item that is warped according to `tablets` and is
 woven according to `rotation_plan`.
 
 `rotation_plan` is a function of three arguments:

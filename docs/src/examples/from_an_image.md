@@ -2,7 +2,7 @@ We can turn a two color image into a tablet weaving pattern.
 
 First we need an image.  I was playing around with the idea of
 visualizing "Gray Code" in a weaving project.  Gray Code is a way of
-counting in binary where onlu one bit changes on each count.
+counting in binary where only one bit changes on each count.
 
 We can use it to make an image, described by a two domensional Julia
 `Array` of `RGB` colors:
@@ -25,7 +25,8 @@ GRAY_PATTERN = map(hcat(gray_sequence...)) do bit
 end
 ```
 
-I like that, but 
+I like that, but I think it would be cooler if it were reflected on
+both axes:
 
 ```@example 1
 GRAY_WEAVE = let

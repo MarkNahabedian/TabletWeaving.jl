@@ -1,5 +1,6 @@
 Here's a simple pattern, found at
-http://research.fibergeek.com/2002/10/10/first-tablet-weaving-double-diamonds/
+[http://research.fibergeek.com/2002/10/10/first-tablet-weaving-double-diamonds/]
+(http://research.fibergeek.com/2002/10/10/first-tablet-weaving-double-diamonds/)
 
 ```@example
 using Colors
