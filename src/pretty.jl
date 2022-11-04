@@ -2,11 +2,18 @@ export pretty_stitches, pretty_plan, pretty
 
 
 function pretty_stitches(image_stitches, flip_right_to_left::Bool)
+    # image_stitches is a Vector with one element per woven row.
+    # Each row is a Vector of stitch colors.
+
     # image_stitches should be the top_image_stitches or bottom_image_stitches
     # of a TabletWeavingPattern.
     # In those Arrays, row 1 is at the top, but when woven,
     # the first row is at the bottom:
     image_stitches = reverse(image_stitches, dims=1)
+    if flip_right_to_left
+        image_stitches = [ reverse(row, dims=1)
+                           for row in image_stitches ]
+    end
     stitch_width = 2
     stitch_length = 3
     stitch_diameter = 1
@@ -127,6 +134,9 @@ function pretty(p::TabletWeavingPattern)
                 elt("td", :width=>"40%",
 	            pretty_stitches(p.top_image_stitches, false),),
                 elt("td", :width=>"40%",
+                    # We need to flip the bottom left to right so that
+                    # it is shown looking from the back rather than
+                    # looking through the front:
 	            pretty_stitches(p.bottom_image_stitches, true)))))
 end
 
