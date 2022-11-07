@@ -9,6 +9,7 @@ export RotationDirection, rotation, rotate!,
     ABCD, DCBA,
     Clockwise, CounterClockwise,
     Forward, Backward
+export StitchSlant, SStitch, ZStitch, stitch_slant_to_char, stitch_slant_for_char
 export shot!
 
 
@@ -461,6 +462,64 @@ tablet_rotation_char(::Backward) = "🡓"
 
 
 ############################################################
+# Stitch Slant
+
+"""
+StitchSlant is the abstract supertype for describing the
+angular slant of a woven stitch.
+"""
+abstract type StitchSlant end 
+
+
+"""
+SStitch describes how a woven stitch is slanted when it 
+angles from the near right (for the corresponding weft) to
+tbe far left.  An `SStitch` is formed when the rotation of
+a tablet passes the thread to the weaver's left.
+"""
+struct SStitch <: StitchSlant end
+
+
+"""
+ZStitch describes how a woven stitch is slanted when it 
+angles from the near left (for the corresponding weft) to
+tbe far right.  A `ZStitch` is formed when the rotation of
+a tablet passes the thread to the weaver's right.
+"""
+struct ZStitch <: StitchSlant end
+
+
+other(::SStitch) = ZStitch()
+other(::ZStitch) = SStitch()
+
+
+"""
+    stitch_slant_for_char(::AbstractCharacter)::StitchSlant
+
+Given an 's', 'z', slash or backslash character, return the
+so-identified StitchSlant.
+"""
+function stitch_slant_for_char(c::AbstractChar)::StitchSlant
+    if c in "/Zz"
+        return ZStitch()
+    elseif c in "\\Ss"
+        return SStitch()
+    else
+        error("Unsupported stitch clant character $c")
+    end
+end
+
+
+"""
+    stitch_slant_to_char(::StitchSlant)::Char
+
+Return a single character which consisely represents the slant of a stitch.
+"""
+stitch_slant_to_char(::SStitch) = '\\'
+stitch_slant_to_char(::ZStitch) = '/'
+
+
+############################################################
 # Throwing a Weft
 
 """
@@ -468,8 +527,9 @@ tablet_rotation_char(::Backward) = "🡓"
 
 Apply the current rotation to the tablet and return the colors of the warp
 threads passing over the top and bottom of the fabric, and the crossing
-direction (as a forward or backslash character) when looking at that face
-of the fabric.
+direction (as a `StitchSlant`) when looking at the front/top  face of the
+fabric.  Note that the slant on the bottom face will be the `other` of the
+slant on the top surface since the fabrick is flipped to see the other face.
 """
 function shot!(t::Tablet)
 	@assert(abs(t.this_shot_rotation) == 1,
@@ -481,16 +541,16 @@ function shot!(t::Tablet)
 	t.max_rotation = min(t.max_rotation, t.accumulated_rotation)
 	hole = if t.this_shot_rotation > 0
 		if t.threading isa BackToFront
-			stitchslant = '/'
+			stitchslant = ZStitch()
 		else
-			stitchslant = '\\'
+			stitchslant = SStitch()
 		end
 		previous_hole
 	else
 		if t.threading isa BackToFront
-			stitchslant = '\\'
+			stitchslant = SStitch()
 		else
-			stitchslant = '/'
+			stitchslant = ZStitch()
 		end
 		next_hole
 	end

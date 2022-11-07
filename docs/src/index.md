@@ -167,7 +167,25 @@ passed through the new shed to finish weaving that row.
 
 ```@docs
 rotate!
-shot!
+shot!  
+```
+
+### Stitch Slant
+
+Rotation of a tablet introduces twist int o the four threads passing
+through that tablet.  That twist is locked in by the next weft thread.
+The twist causes one thread to cross over each surface and two threads
+to pass through from front to back or back to front.  The stitches
+that cross over the front or back surface of the woven fabric will
+appear slightly slanted.  We need vocabulary to describe the directions
+of those slants.
+
+```@docs
+StitchSlant
+SStitch
+ZStitch
+stitch_slant_to_char
+stitch_slant_for_char
 ```
 
 

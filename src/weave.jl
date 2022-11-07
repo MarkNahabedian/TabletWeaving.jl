@@ -49,7 +49,7 @@ function tablet_weave(tablets::Vector{<:Tablet}, rotation_plan)
 		  (top, slant)
 	      end)
 	push!(tapestry_bottom, map(weave) do (top, bottom, slant)
-		  (bottom, slant)
+		  (bottom, other(slant))
 	      end)
 	push!(instructions, collect(zip(rotations, top_edge.(tablets))))
 	row += 1

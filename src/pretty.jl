@@ -18,10 +18,12 @@ function pretty_stitches(image_stitches, flip_right_to_left::Bool)
     stitch_length = 3
     stitch_diameter = 1
     uses = []
+    stitch_slant_fragment(::SStitch) = "#stitch2"
+    stitch_slant_fragment(::ZStitch) = "#stitch1"
     function use(row, col, color, slant)
         push!(uses,
               elt("use",
-	          :href => slant == '/' ? "#stitch1" : "#stitch2",
+	          :href => stitch_slant_fragment(slant),
 	          :x => "$(col * stitch_width)",
 	          :y => "$(row * stitch_length)",
 	          :width => "$(stitch_width)",
