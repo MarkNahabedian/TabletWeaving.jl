@@ -1,5 +1,5 @@
 export simple_rotation_plan, tablets_for_image, symetric_threading!
-export rotation_plan_from_image, TabletWeavingPattern
+export rotation_plan_from_image, f4b4_rotation_plan, TabletWeavingPattern
 
 
 """
@@ -14,6 +14,29 @@ function simple_rotation_plan(row_count::Int, rotation_direction::RotationDirect
 	else
 	    return nothing
 	end
+    end
+end
+
+
+"""
+    f4b4_rotation_plan(row_count::Int)
+
+Return a rotation plan function that weaves the specified number of rows.
+All tablets in the first four rows will be rotated forward.
+All tablets in the next four rows are rotated backward,
+Rotation direction continues to alternate every four rows until the end
+of the pattern.
+"""
+function f4b4_rotation_plan(row_count::Int)
+    function plan(tablets::Vector{<:Tablet}, row_number::Int, tablet_number::Int)
+        if row_number > row_count
+            return nothing
+        end
+        if (row_number % 8) in 0:3
+            Forward()
+        else
+            Backward()
+        end
     end
 end
 

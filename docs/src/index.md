@@ -220,6 +220,7 @@ edge of the tablet that's currently "on top".
 
 ```@docs
 simple_rotation_plan
+f4b4_rotation_plan
 ```
 
 ### Going from an Image to a Pattern
