@@ -68,11 +68,17 @@ function pretty_plan(p::TabletWeavingPattern)
                 elt("td", :align => "right", reader(t))
             end...)
     elt("table",
-        # Each row of the plan
+        # Show initial rotation of each tablet:
+        elt("tr",
+            elt("th", :align => "right", 0),
+            [ elt("td", :align => "right",
+                  top_edge(t).label)
+              for t in p.initial_tablets ]...),
+        # Each row of the plan:
         [ elt("tr",
               elt("th", :align => "right", i),
               [ elt("td", :align => "right",
-                    tablet_rotation_char(t[1]),
+                    string(tablet_rotation_char(t[1])),
                     t[2].label)
                 for t in step
                     ]...)
