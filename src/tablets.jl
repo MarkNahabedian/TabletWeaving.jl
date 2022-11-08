@@ -457,8 +457,8 @@ function rotation(t::Tablet, ::Backward)
 	end
 end
 
-tablet_rotation_char(::Forward) = "🡑"
-tablet_rotation_char(::Backward) = "🡓"
+tablet_rotation_char(::Forward) = 'F'    # "🡑"
+tablet_rotation_char(::Backward) = 'B'   # "🡓"
 
 
 ############################################################
