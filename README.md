@@ -12,3 +12,8 @@ vocabulary to help me get my head around this project.
 This code was originally developed in a Pluto notebook.  The change
 history of that notebook can be found at
 [https://github.com/MarkNahabedian/crafts/tree/migrate_tablet_weaving](https://github.com/MarkNahabedian/crafts/tree/migrate_tablet_weaving).
+
+This document
+[https://www.keithweaves.com/tablet-weaving-standard-terms-and-notation/](https://www.keithweaves.com/tablet-weaving-standard-terms-and-notation/)
+provides concepts and vocabulary related to tablet weaving.
+

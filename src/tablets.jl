@@ -293,10 +293,10 @@ function top_edge(t::Tablet)::TabletEdge
 	# since changing t.stacking can only be done by flipping the card on its
 	# vertical axis.
 	r = mod(t.accumulated_rotation, 4)
-	if r == 0 TabletEdge(1)
-	elseif r == 1 TabletEdge(4)
-	elseif r == 2 TabletEdge(3)
-	else TabletEdge(2)
+	if r == 0 TabletEdge(4)
+	elseif r == 1 TabletEdge(3)
+	elseif r == 2 TabletEdge(2)
+	else TabletEdge(1)
 	end
 end
 
