@@ -252,6 +252,7 @@ the middle and switches to the other threading for the other half.
 
 ```@docs
 symetric_threading!
+alternating_threading!
 ```
 
 ```@docs
