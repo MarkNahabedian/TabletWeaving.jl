@@ -107,7 +107,7 @@ struct HorizontalComposer <: SwatchComposer end
     VerticalComposer
 
 Juxtaposes the swarches vertically, across the width of the warp.
-See [`safe_hcat`](@ref).
+See [`safe_vcat`](@ref).
 """
 struct VerticalComposer <: SwatchComposer end
 
