@@ -1,4 +1,5 @@
-export simple_rotation_plan, tablets_for_image, symetric_threading!
+export simple_rotation_plan, tablets_for_image
+export symetric_threading!, alternating_threading!
 export rotation_plan_from_image, f4b4_rotation_plan, TabletWeavingPattern
 
 
@@ -79,6 +80,7 @@ end
 
 """
     symetric_threading!(Vector{<:Tablet};
+                        leftthreading::TabletThreading = BackToFront())
 
 Set the threading of the tablets to be bilaterally symetric .
 """
@@ -91,6 +93,24 @@ function symetric_threading!(tablets::Vector{<:Tablet};
 	right = tablets[l + 1 - i]
 	left.threading = leftthreading
 	right.threading = other(leftthreading)
+    end
+    tablets
+end
+
+
+"""
+    alternating_threading!(tablets::Vector{<:Tablet};
+                           leftthreading::TabletThreading = BackToFront())
+
+Set the threading of each tablet so that each tablet has the opposite
+threading from its two neighbors.
+"""
+function alternating_threading!(tablets::Vector{<:Tablet};
+                                leftthreading::TabletThreading = BackToFront())
+    threading = leftthreading
+    for tablet in tablets
+        tablet.threading = threading
+        threading = other(threading)
     end
     tablets
 end
