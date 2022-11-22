@@ -54,6 +54,11 @@ argparse_settings = ArgParseSettings()
     arg_type = String
     default = first(keys(THREADING))
 
+    "--end_wefts"
+    help = "How many rows of background color before and after the text"
+    arg_type = Int
+    default = 0
+
     "name"
     help = "The text to be woven"
     arg_type = AbstractString    
@@ -105,8 +110,12 @@ function main()
     # Add right and left borders:
     image = safe_hcat(AlignHeads(), UInt8(0),
 		      fill(UInt8(0), 2, 2),
- image,
+                      image,
 		      fill(UInt8(0), 2, 2))
+    # Add top and bottom borders:
+    ends = fill(UInt8(0), parsed_args["end_wefts"], size(image, 2))
+    image = safe_vcat(AlignHeads(), UInt8(0),
+                      ends, image, ends)
     image = colorize.(image)
     w = TabletWeavingPattern("nametag: $text", image;
                              threading_function = THREADING[parsed_args["threading"]])
