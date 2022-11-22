@@ -2,7 +2,7 @@
 
 julia_version = "1.8.0"
 manifest_format = "2.0"
-project_hash = "a951af701733644dfa94575c8ecd5d74c4d210a5"
+project_hash = "5d1c457f606cd6c4ad612724e5eaf5431b8b2b38"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -53,6 +53,12 @@ git-tree-sha1 = "417b0ed7b8b838aa6ca0a87aadf1bb9eb111ce40"
 uuid = "5ae59095-9a9b-59fe-a467-6f913c188581"
 version = "0.12.8"
 
+[[deps.Compat]]
+deps = ["Dates", "LinearAlgebra", "UUIDs"]
+git-tree-sha1 = "aaabba4ce1b7f8a9b34c015053d3b1edf60fa49c"
+uuid = "34da2185-b29b-5c13-b0c7-acf172513d20"
+version = "4.4.0"
+
 [[deps.CompilerSupportLibraries_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "e66e0078-7015-5450-92f7-15fbd957f2ae"
@@ -68,6 +74,12 @@ version = "0.17.4"
 git-tree-sha1 = "46d2680e618f8abd007bce0c3026cb0c4a8f2032"
 uuid = "9a962f9c-6df0-11e9-0e5d-c546b8b5ee8a"
 version = "1.12.0"
+
+[[deps.DataStructures]]
+deps = ["Compat", "InteractiveUtils", "OrderedCollections"]
+git-tree-sha1 = "d1fff3a548102f48987a52a2e0d114fa97d730f0"
+uuid = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
+version = "0.18.13"
 
 [[deps.DataValueInterfaces]]
 git-tree-sha1 = "bfc1187b79289637fa0ef6d4436ebdfe6905cbd6"
@@ -384,7 +396,7 @@ uuid = "bd369af6-aec1-5ad0-b16a-f7cc5008161c"
 version = "1.10.0"
 
 [[deps.TabletWeaving]]
-deps = ["ArgParse", "Base64", "Colors", "FileIO", "LinearAlgebra", "Logging", "Markdown", "OrderedCollections", "Parameters", "Pluto", "XML"]
+deps = ["ArgParse", "Base64", "Colors", "DataStructures", "FileIO", "LinearAlgebra", "Logging", "Markdown", "OrderedCollections", "Parameters", "Pluto", "XML"]
 path = ".."
 uuid = "562db2e1-a68d-468c-8704-31bf85beff7e"
 version = "0.1.0"

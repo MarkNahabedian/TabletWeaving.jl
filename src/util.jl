@@ -23,6 +23,11 @@ return (as a string) the CSS representation of the color.
 """
 function csscolor end
 
+function csscolor(color::Gray)
+    l = Int(round(color.val * 255))
+    "hsl(0deg, 0%, $(l)%)"
+end
+
 function csscolor(color::RGB)
     css(x) = Int(round(x * 255))
     "rgb($(css(color.r)), $(css(color.g)), $(css(color.b)))"

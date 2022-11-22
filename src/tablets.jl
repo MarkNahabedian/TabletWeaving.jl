@@ -4,7 +4,7 @@ export threading_for_char, threading_char, other
 export TabletStacking, FrontToTheRight, FrontToTheLeft, tablet_stacking_to_char
 export Tablet
 export TABLET_HOLE_LABELS, TABLET_EDGE_LABELS, TabletHole, TabletEdge,
-    next, previous, opposite
+    next, previous, opposite, count_warp_colors
 export RotationDirection, rotation, rotate!,
     ABCD, DCBA,
     Clockwise, CounterClockwise,
@@ -298,6 +298,23 @@ function top_edge(t::Tablet)::TabletEdge
 	elseif r == 2 TabletEdge(2)
 	else TabletEdge(1)
 	end
+end
+
+
+function count_warp_colors(t::Tablet; colors=DefaultDict(0, Dict{Any, Int}()))
+    colors[t.a] += 1
+    colors[t.b] += 1
+    colors[t.c] += 1
+    colors[t.d] += 1
+    colors
+end
+    
+function count_warp_colors(tablets::Vector{Tablet{T}}) where T
+    colors = DefaultDict(0, Dict{Any, Int}())
+    for t in tablets
+        count_warp_colors(t; colors=colors)
+    end
+    colors
 end
 
 

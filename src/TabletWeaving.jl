@@ -2,6 +2,7 @@ module TabletWeaving
 
 using Parameters
 using Colors
+using DataStructures
 using Markdown
 using XML
 using OrderedCollections

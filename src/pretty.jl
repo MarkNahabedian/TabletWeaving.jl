@@ -91,6 +91,35 @@ function pretty_plan(p::TabletWeavingPattern)
 end
 
 
+function pretty_warp_count(tablets::Vector{Tablet{C}}) where C <: Color
+    elt("div",
+        elt("table",
+            # :style=>"empty-cells: show",
+            elt("tr",
+                elt("th", "Color"),
+                elt("th", "Warp Count")),
+            [
+                elt("tr",
+                    elt("td",
+                        :style=>"min-width: 2em;",
+                        # background-color: $(csscolor(c))
+
+                        elt("svg",
+                            :xmlns => "http://www.w3.org/2000/svg",
+                            :width => "5mm",
+                            :height => "5mm",
+                            :viewBox => "0 0 10 10",
+                            elt("rect",
+                                :x => "0", :y => "0",
+                                :width => "10", :height => "10",
+                                :stroke => "$(csscolor(c))",
+                                :fill => "$(csscolor(c))"))),
+                    elt("td", :style=>"align: center", count))
+                for (c, count) in count_warp_colors(tablets)
+                    ]...))
+end
+
+
 TABLET_THREADING_PROSE = """
 The chart below shows how each tablet should be threaded.  The four
 rows of colors are for the A, B, C and D holes respectively.
@@ -131,6 +160,7 @@ function pretty(p::TabletWeavingPattern)
 	elt("h2", p.title),
         elt("p", TABLET_THREADING_PROSE),
 	elt("div", chart_tablets(p.initial_tablets)),
+        pretty_warp_count(p.initial_tablets),
         elt("p", PATTERN_WEAVING_PROSE),
 	elt("div", pretty_plan(p)),
         elt("p", RENDERING_PROSE),
