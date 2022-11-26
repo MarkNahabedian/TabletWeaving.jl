@@ -91,19 +91,49 @@ function pretty_plan(p::TabletWeavingPattern)
 end
 
 
+const PRETTY_WARP_COUNT_JAVASCRIPT = """
+// <![CDATA[
+
+function update_warp_length() {
+    let warp_length = parseInt(document.querySelector('#warp_length').value);
+    for (e of document.querySelectorAll('.by_color')) {
+        let threads = parseInt(e.querySelector('.warp_count').textContent);
+        e.querySelector('.total_length').textContent = (threads * warp_length).toString();
+    }
+}
+
+window.onload = function() {
+    document.querySelector('#warp_length').addEventListener(
+        'input', update_warp_length);
+    update_warp_length();
+};
+
+// ]]>
+"""
+
 function pretty_warp_count(tablets::Vector{Tablet{C}}) where C <: Color
     elt("div",
+        elt("span",
+            elt("label", "Warp length"),
+            elt("input", :type => "tewxt",
+                :id => "warp_length",
+                :size => 8,
+                :value => "1",
+                :inputmode => "numeric",
+                :pattern => "[0-9]+")),
         elt("table",
+            :border => "1",
             # :style=>"empty-cells: show",
             elt("tr",
                 elt("th", "Color"),
-                elt("th", "Warp Count")),
+                elt("th", "Warp Count"),
+                elt("th", "Total Length")),
             [
                 elt("tr",
+                    :class => "by_color",
                     elt("td",
-                        :style=>"min-width: 2em;",
-                        # background-color: $(csscolor(c))
-
+                        # :style=>"min-width: 2em;",
+                        :align => "center",
                         elt("svg",
                             :xmlns => "http://www.w3.org/2000/svg",
                             :width => "5mm",
@@ -114,7 +144,8 @@ function pretty_warp_count(tablets::Vector{Tablet{C}}) where C <: Color
                                 :width => "10", :height => "10",
                                 :stroke => "$(csscolor(c))",
                                 :fill => "$(csscolor(c))"))),
-                    elt("td", :style=>"align: center", count))
+                    elt("td", :align => "center", :class => "warp_count", count),
+                    elt("td", :align => "center", :class => "total_length"))
                 for (c, count) in count_warp_colors(tablets)
                     ]...))
 end
@@ -156,25 +187,33 @@ bottom of each of these images.
 """
 
 function pretty(p::TabletWeavingPattern)
-    elt("div",
-	elt("h2", p.title),
-        elt("p", TABLET_THREADING_PROSE),
-	elt("div", chart_tablets(p.initial_tablets)),
-        pretty_warp_count(p.initial_tablets),
-        elt("p", PATTERN_WEAVING_PROSE),
-	elt("div", pretty_plan(p)),
-        elt("p", RENDERING_PROSE),
-        elt("table", :width=>"80%",
-            elt("tr",
-                elt("th", "Front"),
-                elt("th", "Back")),
-            elt("tr",
-                elt("td", :width=>"40%",
-	            pretty_stitches(p.top_image_stitches, false),),
-                elt("td", :width=>"40%",
-                    # We need to flip the bottom left to right so that
-                    # it is shown looking from the back rather than
-                    # looking through the front:
-	            pretty_stitches(p.bottom_image_stitches, true)))))
+    elt("html",
+        elt("head",
+            elt("script",
+                :type => "text/javascript",
+                PRETTY_WARP_COUNT_JAVASCRIPT)),
+        elt("body",
+            elt("h1", p.title),
+            elt("div",
+	        elt("h2", p.title),
+                elt("p", TABLET_THREADING_PROSE),
+	        elt("div", chart_tablets(p.initial_tablets)),
+                pretty_warp_count(p.initial_tablets),
+                elt("p", PATTERN_WEAVING_PROSE),
+	        elt("div", pretty_plan(p)),
+                elt("p", RENDERING_PROSE),
+                elt("table", :width=>"80%",
+                    elt("tr",
+                        elt("th", "Front"),
+                        elt("th", "Back")),
+                    elt("tr",
+                        elt("td", :width=>"40%",
+	                    pretty_stitches(p.top_image_stitches, false),),
+                        elt("td", :width=>"40%",
+                            # We need to flip the bottom left to right so that
+                            # it is shown looking from the back rather than
+                            # looking through the front:
+	                    pretty_stitches(p.bottom_image_stitches, true)))))
+            ))
 end
 
