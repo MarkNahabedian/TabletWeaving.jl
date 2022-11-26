@@ -47,7 +47,11 @@ WOVEN_GRAY_PATTERN =
                    TabletWeavingPattern("Gray Code Pattern", GRAY_WEAVE;
                    	threading_function = symetric_threading!)
 
-HTML(string(pretty(WOVEN_GRAY_PATTERN)))
+open(joinpath(@__DIR__, "graycode_pattern.html"), "w") do io
+    write(io, string(pretty(WOVEN_GRAY_PATTERN)))
+end
 ```
 
+You can see the resulting HTML pattern file
+[here](graycode_pattern.html).
 

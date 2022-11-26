@@ -70,7 +70,12 @@ let
                              instructions,
                              tablets,
                              top, bottom)
-    HTML(string(pretty(pattern)))
+    open(joinpath(@__DIR__, "diamond-chevron.html"), "w") do io
+        write(io, string(pretty(pattern)))
+    end
 end
 ```
+
+You can see the resulting HTML pattern file
+[here](diamond-chevron.html).
 

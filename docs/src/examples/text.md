@@ -52,6 +52,10 @@ WOVEN =
     TabletWeavingPattern("Sample Text", MESSAGE;
                    	 threading_function = symetric_threading!)
 
-HTML(string(pretty(WOVEN)))
+open(joinpath(@__DIR__, "hello.html"), "w") do io
+    write(io, string(pretty(WOVEN)))
+end
 ```
 
+You can see the resulting HTML pattern file
+[here](hello.html).
