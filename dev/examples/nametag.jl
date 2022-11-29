@@ -123,7 +123,7 @@ function main()
     open(outfile, "w") do io
         write(io, string(pretty(w)))
     end
-    println("Weaving instructions written to $outfile.")
+    println("Weaving instructions written to $(abspath(outfile)).")
 end
 
 main()
