@@ -70,9 +70,11 @@ let
                              instructions,
                              tablets,
                              top, bottom)
-    open(joinpath(@__DIR__, "diamond-chevron.html"), "w") do io
+    output_file = joinpath(@__DIR__, "diamond-chevron.html")
+    open(output_file, "w") do io
         write(io, string(pretty(pattern)))
     end
+    output_file
 end
 ```
 

@@ -47,9 +47,11 @@ WOVEN_GRAY_PATTERN =
                    TabletWeavingPattern("Gray Code Pattern", GRAY_WEAVE;
                    	threading_function = symetric_threading!)
 
-open(joinpath(@__DIR__, "graycode_pattern.html"), "w") do io
+output_file = joinpath(@__DIR__, "graycode_pattern.html")
+open(output_file, "w") do io
     write(io, string(pretty(WOVEN_GRAY_PATTERN)))
 end
+output_file
 ```
 
 You can see the resulting HTML pattern file
