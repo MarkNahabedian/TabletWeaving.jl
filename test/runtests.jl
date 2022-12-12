@@ -2,6 +2,10 @@ using TabletWeaving
 using Test
 using Colors
 
+include("test_elt.jl")
+
+include("test_composition.jl")
+
 @testset "TabletWeaving.jl" begin
     graycode(x) = xor(x, x >>> 1)
     gray_sequence = [digits(graycode(x); base = 2, pad = 8) for x in 0:63]
