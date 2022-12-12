@@ -6,6 +6,8 @@ include("test_elt.jl")
 
 include("test_composition.jl")
 
+include("test_tablets.jl")
+
 @testset "TabletWeaving.jl" begin
     graycode(x) = xor(x, x >>> 1)
     gray_sequence = [digits(graycode(x); base = 2, pad = 8) for x in 0:63]
@@ -60,28 +62,39 @@ include("test_composition.jl")
 	    @test previous(next(edge)) == edge
 	    @test opposite(opposite(edge)) == edge
 	end
+
+        @test TabletWeaving.next_hole(TabletEdge(1)) == TabletHole('B')
+        @test TabletWeaving.next_hole(TabletEdge(2)) == TabletHole('C')
+        @test TabletWeaving.next_hole(TabletEdge(3)) == TabletHole('D')
+        @test TabletWeaving.next_hole(TabletEdge(4)) == TabletHole('A')
+        @test TabletWeaving.previous_hole(TabletEdge(1)) == TabletHole('A')
+        @test TabletWeaving.previous_hole(TabletEdge(2)) == TabletHole('B')
+        @test TabletWeaving.previous_hole(TabletEdge(3)) == TabletHole('C')
+        @test TabletWeaving.previous_hole(TabletEdge(4)) == TabletHole('D')
     end
 
     @testset "Tablet rotation tests" begin
         let
 	    bf = Tablet(; a=:A, b=:B, c=:C, d=:D, threading=BackToFront())
+            @test top_edge(bf) == TabletEdge(4)
 	    rotate!(bf, ABCD())
 	    @test bf.this_shot_rotation == 1
+            @test top_edge(bf) == TabletEdge(3)
 	    rotate!(bf, DCBA())
 	    @test bf.this_shot_rotation == 0
         end
         let
 	    bf = Tablet(; a=:A, b=:B, c=:C, d=:D, threading=BackToFront())
 	    rotate!(bf, Clockwise())
-	    @assert bf.this_shot_rotation == 1
+	    @test bf.this_shot_rotation == 1
 	    rotate!(bf, CounterClockwise())
-	    @assert bf.this_shot_rotation == 0
+	    @test bf.this_shot_rotation == 0
 	    
 	    fb = Tablet(; a=:A, b=:B, c=:C, d=:D, threading=FrontToBack())
 	    rotate!(fb, Clockwise())
-	    @assert fb.this_shot_rotation == -1
+	    @test fb.this_shot_rotation == -1
 	    rotate!(fb, CounterClockwise())
-	    @assert fb.this_shot_rotation == 0
+	    @test fb.this_shot_rotation == 0
 
 	    html"Clockwise and CounterClockwise rotate! assertions passed."
         end
