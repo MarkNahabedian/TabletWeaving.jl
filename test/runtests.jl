@@ -76,10 +76,10 @@ include("test_tablets.jl")
     @testset "Tablet rotation tests" begin
         let
 	    bf = Tablet(; a=:A, b=:B, c=:C, d=:D, threading=BackToFront())
+	    @test bf.this_shot_rotation == 0
             @test top_edge(bf) == TabletEdge(4)
 	    rotate!(bf, ABCD())
 	    @test bf.this_shot_rotation == 1
-            @test top_edge(bf) == TabletEdge(3)
 	    rotate!(bf, DCBA())
 	    @test bf.this_shot_rotation == 0
         end

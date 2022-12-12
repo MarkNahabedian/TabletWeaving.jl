@@ -2,7 +2,7 @@
 export TabletThreading, BackToFront, FrontToBack
 export threading_for_char, threading_char, other
 export TabletStacking, FrontToTheRight, FrontToTheLeft, tablet_stacking_to_char
-export Tablet
+export Tablet, warp_color, top_edge
 export TABLET_HOLE_LABELS, TABLET_EDGE_LABELS, TabletHole, TabletEdge,
     next, previous, opposite, count_warp_colors
 export RotationDirection, rotation, rotate!,
@@ -171,10 +171,10 @@ which is which.  In this code base, 'z' corresponds to
 `BackToFront` threading.
 """
 function threading_for_char(c::AbstractChar)
-    if c == '/' || c == 'z' || c == 'Z' || threading_char(BackToFront())
+    if c == '/' || c == 'z' || c == 'Z' || c == threading_char(BackToFront())
 	return BackToFront()
     end
-    if c == '\\' || c == 's' || c == 'S' || threading_char(FrontToBack())
+    if c == '\\' || c == 's' || c == 'S' || c == threading_char(FrontToBack())
 	return FrontToBack()
     end
     error("Invalid threading designation: $c")
@@ -306,7 +306,7 @@ function count_warp_colors(t::Tablet; colors=DefaultDict(0, Dict{Any, Int}()))
     colors[t.b] += 1
     colors[t.c] += 1
     colors[t.d] += 1
-    colors
+    length(colors)
 end
     
 function count_warp_colors(tablets::Vector{Tablet{T}}) where T
@@ -314,7 +314,7 @@ function count_warp_colors(tablets::Vector{Tablet{T}}) where T
     for t in tablets
         count_warp_colors(t; colors=colors)
     end
-    colors
+    length(colors)
 end
 
 

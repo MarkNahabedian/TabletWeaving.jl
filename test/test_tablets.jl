@@ -18,7 +18,7 @@ end
 end
 
 @testset "Tablet" begin
-    tablet = Tablet(; a = Gray(0.2), Gray(0.4), Gray(0.6), Gray(0.8))
+    tablet = Tablet(; a = Gray(0.2), b = Gray(0.4), c = Gray(0.6), d = Gray(0.8))
     @test count_warp_colors(tablet) == 4
     @test warp_color(tablet, TabletHole('B')) == Gray(0.4)
     @test top_edge(tablet) == TabletEdge(4)
