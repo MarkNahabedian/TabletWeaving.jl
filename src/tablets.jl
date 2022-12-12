@@ -171,10 +171,10 @@ which is which.  In this code base, 'z' corresponds to
 `BackToFront` threading.
 """
 function threading_for_char(c::AbstractChar)
-    if c == '/' || c == 'z' || c == 'Z'
+    if c == '/' || c == 'z' || c == 'Z' || threading_char(BackToFront())
 	return BackToFront()
     end
-    if c == '\\' || c == 's' || c == 'S'
+    if c == '\\' || c == 's' || c == 'S' || threading_char(FrontToBack())
 	return FrontToBack()
     end
     error("Invalid threading designation: $c")
