@@ -23,13 +23,35 @@ return (as a string) the CSS representation of the color.
 """
 function csscolor end
 
+function var"color_value%"(v::Real)
+    Int(round(v * 100))
+end
+
+function var"color_value%"(v::Integer)
+    @assert v >= 0
+    @assert v <= 255
+    var"color_value%"(v/255)
+end
+
+function color_value_255(v::Real)
+    @assert v >= 0
+    @assert v <= 1
+    Int(round(v * 255))
+end
+
+function color_value_255(v::Integer)
+    @assert v >= 0
+    @assert v <= 255
+    v
+end
+
 function csscolor(color::Gray)
-    l = Int(round(color.val * 255))
+    l = var"color_value%"(color.val)
     "hsl(0deg, 0%, $(l)%)"
 end
 
 function csscolor(color::RGB)
-    css(x) = Int(round(x * 255))
+    css(x) = color_value_255(x)
     "rgb($(css(color.r)), $(css(color.g)), $(css(color.b)))"
 end
 
