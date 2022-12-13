@@ -33,6 +33,18 @@ end
     end    
 end
 
+@testset "Stitch slant" begin
+    @test stitch_slant_for_char('/') == ZStitch()
+    @test stitch_slant_for_char('z') == ZStitch()
+    @test stitch_slant_for_char('Z') == ZStitch()
+    @test stitch_slant_for_char('\\') == SStitch()
+    @test stitch_slant_for_char('s') == SStitch()
+    @test stitch_slant_for_char('S') == SStitch()
+    @test stitch_slant_for_char(stitch_slant_to_char(ZStitch())) == ZStitch()
+    @test stitch_slant_for_char(stitch_slant_to_char(SStitch())) == SStitch()
+end
+
+
 @testset "Tablet Arithmetic" begin
 end
 
