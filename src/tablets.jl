@@ -317,7 +317,7 @@ function count_warp_colors(t::Tablet; colors=DefaultDict(0, Dict{Any, Int}()))
     colors
 end
     
-function count_warp_colors(tablets::Vector{Tablet{T}}) where T
+function count_warp_colors(tablets::Vector{<:Tablet{<:Any}})
     colors = DefaultDict(0, Dict{Any, Int}())
     for t in tablets
         count_warp_colors(t; colors=colors)

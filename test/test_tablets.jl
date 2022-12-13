@@ -19,13 +19,18 @@ end
 
 @testset "Tablet" begin
     tablet = Tablet(; a = Gray(0.2), b = Gray(0.4), c = Gray(0.6), d = Gray(0.8))
+    @test warp_color(tablet, TabletHole('B')) == Gray(0.4)
+    @test top_edge(tablet) == TabletEdge(4)
     counts = count_warp_colors(tablet)
     @test  length(counts) == 4
     for (color, count) in counts
         @test count == 1
     end
-    @test warp_color(tablet, TabletHole('B')) == Gray(0.4)
-    @test top_edge(tablet) == TabletEdge(4)
+    counts = count_warp_colors(3 * tablet)
+    @test  length(counts) == 4
+    for (color, count) in counts
+        @test count == 3
+    end    
 end
 
 @testset "Tablet Arithmetic" begin
