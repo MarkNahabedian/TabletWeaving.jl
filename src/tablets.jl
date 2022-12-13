@@ -301,12 +301,20 @@ function top_edge(t::Tablet)::TabletEdge
 end
 
 
+"""
+    count_warp_colors(t)
+
+Return a Dict keyed by color, the values of which are the number
+of times that color is used as a warp thread in the Tablet or tablets `t`.
+"""
+function count_warp_colors end
+
 function count_warp_colors(t::Tablet; colors=DefaultDict(0, Dict{Any, Int}()))
     colors[t.a] += 1
     colors[t.b] += 1
     colors[t.c] += 1
     colors[t.d] += 1
-    length(colors)
+    colors
 end
     
 function count_warp_colors(tablets::Vector{Tablet{T}}) where T
@@ -314,7 +322,7 @@ function count_warp_colors(tablets::Vector{Tablet{T}}) where T
     for t in tablets
         count_warp_colors(t; colors=colors)
     end
-    length(colors)
+    colors
 end
 
 

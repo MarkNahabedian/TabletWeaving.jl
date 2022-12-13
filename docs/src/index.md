@@ -297,6 +297,7 @@ FONT_5x7
 svg_stitch
 other
 csscolor
+count_warp_colors
 chart_tablets
 want_color
 tablet_weave

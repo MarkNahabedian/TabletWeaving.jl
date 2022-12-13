@@ -50,6 +50,11 @@ include("test_tablets.jl")
     end
 
 
+    @testset "csscolor" begin
+        @test csscolor(Gray(0.5)) == "hsl(0deg, 0%, 50%)"
+        @test csscolor(RGB(1, 0, 0)) == "rgb(255, 0, 0)"
+    end
+
     @testset "Tablet structure tests" begin
 	for hole in TabletHole.(TABLET_HOLE_LABELS)
 	    @test next(previous(hole))== hole
