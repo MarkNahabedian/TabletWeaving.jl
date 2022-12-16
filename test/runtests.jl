@@ -209,3 +209,4 @@ using Logging
 
 end
 
+include("test_tablet_charts.jl")
