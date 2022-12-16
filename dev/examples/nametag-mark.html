@@ -24,7 +24,6 @@ window.onload = function() {
   <body>
     <h1>nametag: MARK</h1>
     <div>
-      <h2>nametag: MARK</h2>
       <p>
         The chart below shows how each tablet should be threaded.  The four
 rows of colors are for the A, B, C and D holes respectively.
@@ -219,7 +218,7 @@ twist for each tablet.
 
       </p>
       <div>
-        <table>
+        <table id="plan">
           <tr>
             <th align="right">0</th>
             <td align="right">4</td>
@@ -232,1838 +231,569 @@ twist for each tablet.
             <td align="right">4</td>
             <td align="right">4</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">1</th>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">B1</td>
+            <td align="right">B1</td>
+            <td align="right">B1</td>
+            <td align="right">B1</td>
+            <td align="right">B1</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">2</th>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">F4</td>
+            <td align="right">F4</td>
+            <td align="right">F4</td>
+            <td align="right">F4</td>
+            <td align="right">F4</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">3</th>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">B1</td>
+            <td align="right">B1</td>
+            <td align="right">B1</td>
+            <td align="right">B1</td>
+            <td align="right">B1</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">4</th>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">F4</td>
+            <td align="right">F4</td>
+            <td align="right">F4</td>
+            <td align="right">F4</td>
+            <td align="right">F4</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">5</th>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">B1</td>
+            <td align="right">B1</td>
+            <td align="right">B1</td>
+            <td align="right">B1</td>
+            <td align="right">B1</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">6</th>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">F4</td>
+            <td align="right">F4</td>
+            <td align="right">F4</td>
+            <td align="right">F4</td>
+            <td align="right">F4</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">7</th>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">B1</td>
+            <td align="right">B1</td>
+            <td align="right">B1</td>
+            <td align="right">B1</td>
+            <td align="right">B1</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">8</th>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">F4</td>
+            <td align="right">F4</td>
+            <td align="right">F4</td>
+            <td align="right">F4</td>
+            <td align="right">F4</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">9</th>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">B1</td>
+            <td align="right">B1</td>
+            <td align="right">B1</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">10</th>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              2
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              B
-              2
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">B2</td>
+            <td align="right">F4</td>
+            <td align="right">B2</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">11</th>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">B3</td>
+            <td align="right">F3</td>
+            <td align="right">B3</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">12</th>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">F2</td>
+            <td align="right">B4</td>
+            <td align="right">F2</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">13</th>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">B3</td>
+            <td align="right">B1</td>
+            <td align="right">B3</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">14</th>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">F2</td>
+            <td align="right">F4</td>
+            <td align="right">F2</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">15</th>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">B3</td>
+            <td align="right">B1</td>
+            <td align="right">B3</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">16</th>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">F2</td>
+            <td align="right">F2</td>
+            <td align="right">F4</td>
+            <td align="right">F2</td>
+            <td align="right">F2</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">17</th>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">B3</td>
+            <td align="right">B3</td>
+            <td align="right">F3</td>
+            <td align="right">B3</td>
+            <td align="right">B3</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">18</th>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">F2</td>
+            <td align="right">B4</td>
+            <td align="right">F2</td>
+            <td align="right">B4</td>
+            <td align="right">F2</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">19</th>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              1
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              F
-              1
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">F1</td>
+            <td align="right">B1</td>
+            <td align="right">B3</td>
+            <td align="right">B1</td>
+            <td align="right">F1</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">20</th>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              2
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              B
-              2
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">B2</td>
+            <td align="right">F4</td>
+            <td align="right">F2</td>
+            <td align="right">F4</td>
+            <td align="right">B2</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">21</th>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              1
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              1
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              1
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">F1</td>
+            <td align="right">F3</td>
+            <td align="right">F1</td>
+            <td align="right">F3</td>
+            <td align="right">F1</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">22</th>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              2
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              B
-              2
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">B2</td>
+            <td align="right">F2</td>
+            <td align="right">F4</td>
+            <td align="right">F2</td>
+            <td align="right">B2</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">23</th>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              1
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              F
-              1
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">F1</td>
+            <td align="right">B3</td>
+            <td align="right">B1</td>
+            <td align="right">B3</td>
+            <td align="right">F1</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">24</th>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">F4</td>
+            <td align="right">F2</td>
+            <td align="right">F4</td>
+            <td align="right">F2</td>
+            <td align="right">F4</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">25</th>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              1
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              1
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">F1</td>
+            <td align="right">F3</td>
+            <td align="right">F1</td>
+            <td align="right">B1</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">26</th>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              B
-              2
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">F4</td>
+            <td align="right">F2</td>
+            <td align="right">F4</td>
+            <td align="right">B2</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">27</th>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              F
-              1
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">B1</td>
+            <td align="right">B3</td>
+            <td align="right">B1</td>
+            <td align="right">F1</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">28</th>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              2
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              2
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">B2</td>
+            <td align="right">B4</td>
+            <td align="right">B2</td>
+            <td align="right">F4</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">29</th>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">B3</td>
+            <td align="right">F3</td>
+            <td align="right">B3</td>
+            <td align="right">B1</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">30</th>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">F2</td>
+            <td align="right">F2</td>
+            <td align="right">B4</td>
+            <td align="right">F4</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">31</th>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">B3</td>
+            <td align="right">B3</td>
+            <td align="right">B1</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">32</th>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">F2</td>
+            <td align="right">F2</td>
+            <td align="right">F2</td>
+            <td align="right">F4</td>
+            <td align="right">F2</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">33</th>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              1
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              F
-              1
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">F1</td>
+            <td align="right">B3</td>
+            <td align="right">B3</td>
+            <td align="right">B1</td>
+            <td align="right">F1</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">34</th>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              2
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              B
-              2
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">B2</td>
+            <td align="right">F2</td>
+            <td align="right">F2</td>
+            <td align="right">B2</td>
+            <td align="right">F4</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">35</th>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              1
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              F
-              1
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">F1</td>
+            <td align="right">B3</td>
+            <td align="right">F1</td>
+            <td align="right">B3</td>
+            <td align="right">B1</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">36</th>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              2
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">B2</td>
+            <td align="right">B4</td>
+            <td align="right">F4</td>
+            <td align="right">F2</td>
+            <td align="right">F4</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">37</th>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              1
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">F1</td>
+            <td align="right">B1</td>
+            <td align="right">F3</td>
+            <td align="right">B3</td>
+            <td align="right">B1</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">38</th>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              2
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">B2</td>
+            <td align="right">F4</td>
+            <td align="right">F2</td>
+            <td align="right">B4</td>
+            <td align="right">F4</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">39</th>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              1
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">F1</td>
+            <td align="right">B1</td>
+            <td align="right">B3</td>
+            <td align="right">B1</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">40</th>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">F4</td>
+            <td align="right">F4</td>
+            <td align="right">F2</td>
+            <td align="right">F4</td>
+            <td align="right">F2</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">41</th>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">B1</td>
+            <td align="right">B1</td>
+            <td align="right">B3</td>
+            <td align="right">B1</td>
+            <td align="right">B3</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">42</th>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">F4</td>
+            <td align="right">F4</td>
+            <td align="right">F2</td>
+            <td align="right">F4</td>
+            <td align="right">F2</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">43</th>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">B1</td>
+            <td align="right">B1</td>
+            <td align="right">B3</td>
+            <td align="right">B1</td>
+            <td align="right">B3</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">44</th>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">F4</td>
+            <td align="right">F4</td>
+            <td align="right">F2</td>
+            <td align="right">F4</td>
+            <td align="right">F2</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">45</th>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">B1</td>
+            <td align="right">B1</td>
+            <td align="right">B3</td>
+            <td align="right">B1</td>
+            <td align="right">B3</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">46</th>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              F
-              4
-            </td>
-            <td align="right">
-              F
-              2
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
-            <td align="right">
-              B
-              4
-            </td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
+            <td align="right">F4</td>
+            <td align="right">F4</td>
+            <td align="right">F2</td>
+            <td align="right">F4</td>
+            <td align="right">F2</td>
+            <td align="right">B4</td>
+            <td align="right">B4</td>
           </tr>
-          <tr>
+          <tr class="step">
             <th align="right">47</th>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              B
-              1
-            </td>
-            <td align="right">
-              B
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
-            <td align="right">
-              F
-              3
-            </td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
+            <td align="right">B1</td>
+            <td align="right">B1</td>
+            <td align="right">B3</td>
+            <td align="right">B1</td>
+            <td align="right">B3</td>
+            <td align="right">F3</td>
+            <td align="right">F3</td>
           </tr>
           <tr>
             <th align="right">end</th>
