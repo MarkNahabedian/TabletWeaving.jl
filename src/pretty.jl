@@ -36,7 +36,6 @@ function pretty_stitches(image_stitches, flip_right_to_left::Bool)
 	    use(rownum, colnum, color, slant)
 	end
     end
-    println(length(uses))
     viewbox_width = stitch_width * length(image_stitches[1])
     viewbox_height = stitch_length * length(image_stitches)
     elt("svg", 
@@ -67,7 +66,7 @@ function pretty_plan(p::TabletWeavingPattern)
             map(p.end_tablets) do t
                 elt("td", :align => "right", reader(t))
             end...)
-    elt("table",
+    elt("table", :id=>"plan",
         # Show initial rotation of each tablet:
         elt("tr",
             elt("th", :align => "right", 0),
@@ -75,11 +74,10 @@ function pretty_plan(p::TabletWeavingPattern)
                   top_edge(t).label)
               for t in p.initial_tablets ]...),
         # Each row of the plan:
-        [ elt("tr",
+        [ elt("tr", :class=>"step",
               elt("th", :align => "right", i),
               [ elt("td", :align => "right",
-                    string(tablet_rotation_char(t[1])),
-                    t[2].label)
+                    "$(tablet_rotation_char(t[1]))$(t[2].label)")
                 for t in step
                     ]...)
           for (i, step) in enumerate(p.weaving_steps)
@@ -195,7 +193,6 @@ function pretty(p::TabletWeavingPattern)
         elt("body",
             elt("h1", p.title),
             elt("div",
-	        elt("h2", p.title),
                 elt("p", TABLET_THREADING_PROSE),
 	        elt("div", chart_tablets(p.initial_tablets)),
                 pretty_warp_count(p.initial_tablets),

@@ -3,9 +3,7 @@ using Test
 using Colors
 
 include("test_elt.jl")
-
 include("test_composition.jl")
-
 include("test_tablets.jl")
 
 @testset "TabletWeaving.jl" begin
@@ -210,3 +208,5 @@ using Logging
 end
 
 include("test_tablet_charts.jl")
+include("test_weave.jl")
+
