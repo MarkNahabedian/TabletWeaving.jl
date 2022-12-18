@@ -119,42 +119,26 @@ end
 """
     want_color(::Tablet, color)
 
-return the new top edge if the tablet is rotated so that the stitch
-will come out the specified color.  `want_color` is used to turn an
-image into a weaving pattern.
+Return a Vector containing named tuples (of new edge,
+AbstractRotation, and change in tablet rotation) describing the
+possible rotations that will provide the specified color.
 """
 function want_color(tablet::Tablet{T}, color::T) where T
+    results = []
     e = top_edge(tablet)
-    c_next = warp_color(tablet, next_hole(e))
-    c_prev = warp_color(tablet, previous_hole(e))
-    # If both colors are the same, which direction should we prefer?
-    # Probably the one that is towards 0 accumulated twist.
-    want_rotation =
-	if c_next == c_prev
-	    - sign(tablet.accumulated_rotation)
-	elseif color == c_next
-	    -1
-	elseif color == c_prev
-	    1
-	else
-	    error("Can't match color $c with tablet $tablet.")
-	end
-    if want_rotation == 0
-	want_rotation = 1
+    function check(hole_function, edge_function, rotation_change)
+        if warp_color(tablet, hole_function(e)) == color
+            push!(results,
+                  (rotation = first(filter([Forward(), Backward()]) do r
+                                        rotation(tablet, r) == rotation_change
+                                    end),
+                   accumulated_rotation = rotation_change + tablet.accumulated_rotation,
+                   edge = edge_function(e)))
+        end
     end
-    new_edge = if want_rotation == 1
-	previous(e)
-    else
-	next(e)
-    end
-    rot::RotationDirection = Forward()
-    for r in [Forward(), Backward()]
-	if rotation(tablet, r) == want_rotation
-	    rot = r
-	    break
-	end
-    end
-    return new_edge, rot
+    check(next_hole, next, -1)
+    check(previous_hole, previous, 1)
+    sort(results, by = x -> abs(x. accumulated_rotation))
 end
 
 
@@ -180,14 +164,39 @@ struct TabletWeavingPattern # {C} # where C causes "invalid type signature" erro
 end
 
 function rotation_plan_from_image(image, tablets)
-    tablets = copy.(tablets)
+    cached = nothing
     function plan(tablets, row, column)
 	if row > size(image)[1]
 	    return nothing
 	end
+        side(column) = sign(length(tablets)/2 - column)
+        # Check cache applicability:
+        if cached == nothing || cached.row != row || cached.column != column - 1
+            cached = nothing
+        end
+        tablet = tablets[column]
 	color = image[row, column]
-	(edge, rotation) = want_color(tablets[column], color)
-	rotation
+        choices = map(r -> r.rotation, want_color(tablets[column], color))
+        if length(choices) == 0
+            error("Can't match color $color with tablet $tablet.")
+        elseif length(choices) == 1
+            rotation = choices[1]
+        elseif cached == nothing
+            # Prefer minimizing accumulated_rotation.  want_color
+            # sorts by this.
+            rotation = choices[1]
+        elseif side(column) == side(cached.column)
+            # prefer the same rotation as for the previous tablet if
+            # it's acceptable and we've not passed the middle of the
+            # warp:
+            rotation = cached.rotation
+        elseif other(cached.rotation) in choices
+            rotation = other(cached.rotation)
+        else
+            rotation = choices[1]
+        end
+        cached = (row=row, column=column, rotation=rotation)
+        rotation
     end
     plan
 end

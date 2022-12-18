@@ -482,6 +482,9 @@ function rotation(t::Tablet, ::Backward)
 	end
 end
 
+other(::Forward) = Backward()
+other(::Backward) = Forward()
+
 tablet_rotation_char(::Forward) = 'F'    # "🡑"
 tablet_rotation_char(::Backward) = 'B'   # "🡓"
 
