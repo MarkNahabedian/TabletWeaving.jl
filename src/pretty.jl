@@ -30,8 +30,8 @@ function pretty_stitches(image_stitches, flip_right_to_left::Bool)
 	    :height => "$(stitch_length)",
 	    :style => "stroke: none; fill: $(csscolor(color)); vector-effect: non-scaling-stroke")
     end
-    viewbox_width = stitch_width * length(image_stitches[1])
-    viewbox_height = stitch_length * length(image_stitches)
+    viewbox_width = stitch_width * (1 + length(image_stitches[1]))
+    viewbox_height = stitch_length * (1 + length(image_stitches))
     elt("svg", 
         :viewBox => "0 0 $viewbox_width $viewbox_height",
         elt("g",
