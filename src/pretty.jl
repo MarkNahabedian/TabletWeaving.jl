@@ -17,24 +17,18 @@ function pretty_stitches(image_stitches, flip_right_to_left::Bool)
     stitch_width = 2
     stitch_length = 3
     stitch_diameter = 1
-    uses = []
     stitch_slant_fragment(::SStitch) = "#stitch2"
     stitch_slant_fragment(::ZStitch) = "#stitch1"
-    function use(row, col, color, slant)
-        push!(uses,
-              elt("use",
-	          :href => stitch_slant_fragment(slant),
-	          :x => "$(col * stitch_width)",
-	          :y => "$(row * stitch_length)",
-	          :width => "$(stitch_width)",
-	          :height => "$(stitch_length)",
-	          :style => "stroke: none; fill: $(csscolor(color)); vector-effect: non-scaling-stroke"))
-    end
-    for (rownum, row) in enumerate(image_stitches)
-	for (colnum, stitch) in enumerate(row)
-	    (color, slant) = stitch
-	    use(rownum, colnum, color, slant)
-	end
+    function use(row, col, stitch)
+        (color, slant) = stitch
+        elt("use",
+            :column_number => "$col",
+	    :href => stitch_slant_fragment(slant),
+	    :x => "$(col * stitch_width)",
+	    :y => "$(row * stitch_length)",
+	    :width => "$(stitch_width)",
+	    :height => "$(stitch_length)",
+	    :style => "stroke: none; fill: $(csscolor(color)); vector-effect: non-scaling-stroke")
     end
     viewbox_width = stitch_width * length(image_stitches[1])
     viewbox_height = stitch_length * length(image_stitches)
@@ -55,7 +49,14 @@ function pretty_stitches(image_stitches, flip_right_to_left::Bool)
     	        :refX => "0",
                 :refY => "0",
     	        svg_stitch(stitch_width, stitch_length, stitch_diameter, '\\';),),
-            uses...))
+            [
+                elt("g", :rownum=>"$rownum",
+                    [
+                        use(rownum, colnum, stitch)
+                        for (colnum, stitch) in enumerate(row)
+                    ]...)
+                for (rownum, row) in enumerate(image_stitches)
+            ]...))
 end
 
 
