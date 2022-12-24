@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Simple Example · TabletWeaving.jl</title><script data-outdated-warner src="../../assets/warner.js"></script><link rel="canonical" href="https://MarkNahabedian.github.io/TabletWeaving.jl/examples/simple_chevron/"/><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">TabletWeaving.jl</a></span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Examples</span><ul><li class="is-active"><a class="tocitem" href>Simple Example</a></li><li><a class="tocitem" href="../from_an_image/">From an Image</a></li><li><a class="tocitem" href="../text/">Weaving Text</a></li><li><a class="tocitem" href="../nametag/">Nametags</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Examples</a></li><li class="is-active"><a href>Simple Example</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Simple Example</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/MarkNahabedian/TabletWeaving.jl/blob/main/docs/src/examples/simple_chevron.md#" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><p>Here&#39;s a simple pattern, found at <a href="http://research.fibergeek.com/2002/10/10/first-tablet-weaving-double-diamonds/">http://research.fibergeek.com/2002/10/10/first-tablet-weaving-double-diamonds/</a></p><pre><code class="language-julia hljs">using Colors
+using TabletWeaving
+
+# A function for setting up tablets to weave a simple symetric
+# diagonal line pattern that can weave chevrons or diamonds:
+function make_diamond_tablets()
+    f = RGB(0.0, 0.8, 0.0)
+    b = RGB(0.6, 0.3, 0.3)
+    id = 0
+    function tab(a, b, c, d, threading)
+        id += 1
+        Tablet{Color}(; id=id, a=a, b=b, c=c, d=d, threading=threading)
+    end
+    s = threading_for_char(&#39;s&#39;)
+    z = threading_for_char(&#39;z&#39;)
+    [
+        # Border:
+        tab(b, b, b, b, z),   #  1
+        tab(b, b, b, b, z),   #  2
+        tab(f, f, f, f, z),   #  3
+        # Pattern:
+        tab(b, f, f, b, s),   #  4
+        tab(f, f, b, b, s),   #  5
+        tab(f, b, b, f, s),   #  6
+        tab(b, b, f, f, s),   #  7
+        tab(b, f, f, b, s),   #  8
+        tab(f, f, b, b, s),   #  9
+        tab(f, b, b, f, s),   # 10
+        tab(b, b, f, f, s),   # 11
+        # Reverse:
+        tab(b, b, f, f, z),   # 12
+        tab(f, b, b, f, z),   # 13
+        tab(f, f, b, b, z),   # 14
+        tab(b, f, f, b, z),   # 15
+        tab(b, b, f, f, z),   # 16
+        tab(f, b, b, f, z),   # 17
+        tab(f, f, b, b, z),   # 18
+        tab(b, f, f, b, z),   # 19
+        # Enough!
+        # border
+        tab(f, f, f, f, s),   # 20
+        tab(b, b, b, b, s),   # 21
+        tab(b, b, b, b, s)#   22
+    ]
+end
+
+let
+    initial_tablets = make_diamond_tablets()
+    function rotation_plan(tablets, row_number, column_number)
+        if row_number in 1:8
+            Backward()
+        elseif row_number in 9:24
+            Forward()
+        else
+            nothing
+        end
+    end
+    tablets = copy.(initial_tablets)
+    top, bottom, instructions =
+	tablet_weave(tablets, rotation_plan)
+    pattern =
+        TabletWeavingPattern(&quot;Diamond/Chevron Pattern&quot;,
+                             nothing,
+                             initial_tablets,
+                             instructions,
+                             tablets,
+                             top, bottom)
+    output_file = joinpath(@__DIR__, &quot;diamond-chevron.html&quot;)
+    open(output_file, &quot;w&quot;) do io
+        write(io, string(pretty(pattern)))
+    end
+    output_file
+end</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">&quot;/home/runner/work/TabletWeaving.jl/TabletWeaving.jl/docs/build/examples/diamond-chevron.html&quot;</code></pre><p>You can see the resulting HTML pattern file <a href="../diamond-chevron.html">here</a>.</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../">« Home</a><a class="docs-footer-nextpage" href="../from_an_image/">From an Image »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Saturday 24 December 2022 22:23">Saturday 24 December 2022</span>. Using Julia version 1.8.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
