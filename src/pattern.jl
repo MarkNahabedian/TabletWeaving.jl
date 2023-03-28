@@ -82,7 +82,7 @@ end
     symetric_threading!(Vector{<:Tablet};
                         leftthreading::TabletThreading = BackToFront())
 
-Set the threading of the tablets to be bilaterally symetric .
+Set the threading of the tablets to be bilaterally symetric.
 """
 function symetric_threading!(tablets::Vector{<:Tablet};
 			     leftthreading::TabletThreading = BackToFront())
@@ -164,38 +164,42 @@ struct TabletWeavingPattern # {C} # where C causes "invalid type signature" erro
 end
 
 function rotation_plan_from_image(image, tablets)
-    cached = nothing
+    # Remember what we've previously computed:
+    results = Array{Union{Nothing, RotationDirection}}(nothing, size(image))
     function plan(tablets, row, column)
-	if row > size(image)[1]
+	if row < 1 || row > size(image)[1]
 	    return nothing
 	end
         side(column) = sign(length(tablets)/2 - column)
-        # Check cache applicability:
-        if cached == nothing || cached.row != row || cached.column != column - 1
-            cached = nothing
-        end
         tablet = tablets[column]
 	color = image[row, column]
-        choices = map(r -> r.rotation, want_color(tablets[column], color))
+        choices = map(r -> r.rotation, want_color(tablet, color))
+        left_neighbor_rotation = (
+            if column > 1
+                results[row, column - 1]
+            else
+                nothing
+            end)
         if length(choices) == 0
             error("Can't match color $color with tablet $tablet.")
         elseif length(choices) == 1
             rotation = choices[1]
-        elseif cached == nothing
+        elseif left_neighbor_rotation == nothing
             # Prefer minimizing accumulated_rotation.  want_color
             # sorts by this.
             rotation = choices[1]
-        elseif side(column) == side(cached.column)
+        elseif side(column) == side(column - 1)
             # prefer the same rotation as for the previous tablet if
             # it's acceptable and we've not passed the middle of the
             # warp:
-            rotation = cached.rotation
-        elseif other(cached.rotation) in choices
-            rotation = other(cached.rotation)
+            rotation = left_neighbor_rotation
+        elseif other(left_neighbor_rotation) in choices
+            rotation = other(left_neighbor_rotation)
         else
             rotation = choices[1]
         end
         cached = (row=row, column=column, rotation=rotation)
+        results[row, column] = rotation
         rotation
     end
     plan
