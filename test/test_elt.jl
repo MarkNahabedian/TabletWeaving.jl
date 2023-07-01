@@ -1,8 +1,9 @@
+using XML
 
 @testset "elt" begin
     e = TabletWeaving.elt("foo", "foobar", :class=>"x")
-    @test e.tag == "foo"
-    @test e.attributes[:class] == "x"
-    @test length(e.children) == 1
-    @test e.children[1] == "foobar"
+    @test XML.tag(e) == "foo"
+    @test XML.attributes(e)["class"] == "x"
+    @test length(XML.children(e)) == 1
+    @test XML.value(XML.children(e)[1]) == "foobar"
 end

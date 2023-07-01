@@ -4,7 +4,7 @@ using Parameters
 using Colors
 using DataStructures
 using Markdown
-using XML
+import XML
 using OrderedCollections
 using LinearAlgebra
 

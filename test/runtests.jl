@@ -1,4 +1,5 @@
 using TabletWeaving
+using TabletWeaving: next, previous, opposite
 using Test
 using Colors
 

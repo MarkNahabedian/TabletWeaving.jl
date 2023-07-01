@@ -8,15 +8,15 @@ function elt(tag::String, stuff...)
         if s isa Pair
             attributes[s.first] = string(s.second)
         elseif s isa AbstractString
-            push!(children, s)
+            push!(children, XML.Text(s))
         elseif s isa Number
-            push!(children, string(s))
+            push!(children, XML.Text(string(s)))
         elseif s isa XML.Node
             push!(children, s)
         else
             error("unsupported XML content: $s")
         end
     end
-    XML.Node(XML.ELEMENT_NODE, tag, attributes, children)
+    XML.Node(XML.Element, tag, attributes, nothing, children)
 end
 

@@ -11,7 +11,7 @@ using EzXML
               color2 color1 ]
     pattern = TabletWeavingPattern("test", image;
                                    threading_function = symetric_threading!)
-    doc = parsexml(string(pretty(pattern)))
+    doc = parsexml(XML.write(pretty(pattern)))
     plan = findfirst("//*[@id='plan']", doc)
 
     # row 0:
@@ -38,5 +38,4 @@ using EzXML
     @test nodecontent.(findall("tr[th/text() = 'min']/td", plan)) == [ "-1", "-5" ]
     @test nodecontent.(findall("tr[th/text() = 'max']/td", plan)) == [ "-1", "-5" ]
 end
-
 
