@@ -13,7 +13,9 @@ abstract type SwatchComposer end
 """
     SwatchAlignment
 
-An abstract supertype whose concrete instances are used to control the
+A swatch represents a rectangular piece of a tablet weaving design.
+
+Swatch is the abstract supertype whose concrete instances are used to control the
 alignment of swatches that are being composed by `safe_hcat` or
 `safe_vcat`.
 
