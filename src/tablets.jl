@@ -5,7 +5,7 @@ export TabletStacking, FrontToTheRight, FrontToTheLeft, tablet_stacking_to_char
 export Tablet, warp_color, top_edge
 export TABLET_HOLE_LABELS, TABLET_EDGE_LABELS, TabletHole, TabletEdge,
     next, previous, opposite, count_warp_colors
-export RotationDirection, rotation, rotate!,
+export RotationDirection, Rotation, rotation, rotate!,
     ABCD, DCBA,
     Clockwise, CounterClockwise,
     Forward, Backward
@@ -98,6 +98,18 @@ opposite(hole::TabletHole) = TabletHole(opposite(hole.label, TABLET_HOLE_LABELS)
 next(edge::TabletEdge) = TabletEdge(next(edge.label, TABLET_EDGE_LABELS))
 previous(edge::TabletEdge) = TabletEdge(previous(edge.label, TABLET_EDGE_LABELS))
 opposite(edge::TabletEdge) = TabletEdge(opposite(edge.label, TABLET_EDGE_LABELS))
+
+function Base.:+(edge::TabletEdge, rotation::Integer)
+    if rotation == 0
+        edge
+    elseif rotation < 0
+        next(edge) + (rotation + 1)
+    else
+        previous(edge) + (rotation - 1)
+    end
+end
+
+Base.:-(edge::TabletEdge, rotation::Integer) = edge + (- rotation)
 
 
 """
@@ -284,20 +296,23 @@ end
 """
     top_edge(::Tablet)::TabletEdge
 
-Return the TabletEdge of the top edge of the tablet.
+Return the TabletEdge of the top edge of the tablet at its current
+rotation.
+
 This edge is easier to see on the loom than the shed edge.
 It is also unaffected by the tablet's `stacking`.
 """
 function top_edge(t::Tablet)::TabletEdge
-	# t.stacking affects which edge faces the shed but not which is on top
-	# since changing t.stacking can only be done by flipping the card on its
-	# vertical axis.
-	r = mod(t.accumulated_rotation, 4)
-	if r == 0 TabletEdge(4)
-	elseif r == 1 TabletEdge(3)
-	elseif r == 2 TabletEdge(2)
-	else TabletEdge(1)
-	end
+    # t.stacking affects which edge faces the shed but not which is on top
+    # since changing t.stacking can only be done by flipping the card on its
+    # vertical axis.
+    # By cnvention, edge 4 is on top when the loom has just been warped.
+    r = mod(t.accumulated_rotation, 4)
+    if r == 0 TabletEdge(4)
+    elseif r == 1 TabletEdge(3)
+    elseif r == 2 TabletEdge(2)
+    else TabletEdge(1)
+    end
 end
 
 
@@ -380,25 +395,44 @@ end
 """
 abstract type RotationDirection end
 
-# ╔═╡ f1c8a4c6-6c22-49f4-9df1-ef3ae5e3cb40
+
+struct Rotation
+    direction::RotationDirection
+    count::Int
+
+    function Rotation(direction, count::Integer)
+        @assert count >= 0
+        # We could use other(direction) instead of giving an error,
+        # but this should probably never happen.
+        new(direction, count)
+    end
+end
+
+tablet_rotation_char(r::Rotation) = tablet_rotation_char(r.direction)
+
+rotation(t::Tablet, r::Rotation) = r.count * rotation(t, r.direction)
+
+
 """
     rotation(::Tablet, ::RotationDirection)
 
 Return the change in the `Tablet`'s `accumulated_rotation` if the specified
 `AbstractRotation is applied.
 """
-function rotation(::Tablet, ::RotationDirection) end
+function rotation(::Tablet, ::RotationDirection)
+    error("Each subtype of RotationDirection must specialize rotation.")
+end
 
 
 """
-    rotate!(::Tablet, ::RotationDirection)
+    rotate!(::Tablet, ::Rotation)
 
-Rotate the tablet by one position in the specified direction.
+Rotate the tablet by the specified Rotation.
 """
-function rotate!(t::Tablet, d::RotationDirection)
-	new_rotation = rotation(t, d)
-	t.this_shot_rotation += new_rotation
-	return t
+function rotate!(t::Tablet, d::Rotation)
+    new_rotation = rotation(t, d)
+    t.this_shot_rotation += new_rotation
+    return t
 end
 
 

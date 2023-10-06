@@ -1,4 +1,4 @@
-export simple_rotation_plan, tablets_for_image
+export simple_rotation_plan, tablets_for_image, TabletRotationPolicy
 export symetric_threading!, alternating_threading!
 export rotation_plan_from_image, f4b4_rotation_plan, TabletWeavingPattern
 
@@ -11,7 +11,7 @@ Return a simple rotation plan function, as could be passed to [`tablet_weave`](@
 function simple_rotation_plan(row_count::Int, rotation_direction::RotationDirection)
     function plan(tablets::Vector{<:Tablet}, row_number::Int, tablet_number::Int)
 	if row_number <= row_count
-	    return rotation_direction
+	    return Rotation(rotation_direction, 1)
 	else
 	    return nothing
 	end
@@ -34,9 +34,9 @@ function f4b4_rotation_plan(row_count::Int)
             return nothing
         end
         if (row_number % 8) in 0:3
-            Forward()
+            Rotation(Forward(), 1)
         else
-            Backward()
+            Rotation(Backward(), 1)
         end
     end
 end
@@ -116,29 +116,110 @@ function alternating_threading!(tablets::Vector{<:Tablet};
 end
 
 
-"""
-    want_color(::Tablet, color)
+struct WantColorChoice
+    rotation::Rotation
+    # Positive rotation corresponds to Forward().
+    rotation_count::Int64
+    accumulated_rotation::Int64
+    new_edge::TabletEdge
+end
 
-Return a Vector containing named tuples (of new edge,
-AbstractRotation, and change in tablet rotation) describing the
+WantColorChoices = Vector{WantColorChoice}
+
+
+"""
+    want_color(::Tablet, color)::WantColorChoices
+
+Return a Vector of `WantColorChoice`s describing the
 possible rotations that will provide the specified color.
 """
-function want_color(tablet::Tablet{T}, color::T) where T
+function want_color(tablet::Tablet{T}, color::T)::WantColorChoices where T
     results = []
-    e = top_edge(tablet)
-    function check(hole_function, edge_function, rotation_change)
-        if warp_color(tablet, hole_function(e)) == color
+    function check(r::Rotation)
+        rot = rotation(tablet, r)
+        f, hf = rot < 0 ? (next, next_hole) : (previous, previous_hole)
+        new_edge = top_edge(tablet)
+        # For single rotations, just calling the hole function is
+        # sufficient:
+        for i in 2 : abs(rot)
+            new_edge = f(new_edge)
+        end
+        if warp_color(tablet, hf(new_edge)) == color
+            # We do need to apply the rotation function to cortrectly
+            # etermine the new edge though:
+            new_edge = f(new_edge)
             push!(results,
-                  (rotation = first(filter([Forward(), Backward()]) do r
-                                        rotation(tablet, r) == rotation_change
-                                    end),
-                   accumulated_rotation = rotation_change + tablet.accumulated_rotation,
-                   edge = edge_function(e)))
+                  WantColorChoice(r, rot,
+                                  rot + tablet.accumulated_rotation,
+                                  new_edge))
         end
     end
-    check(next_hole, next, -1)
-    check(previous_hole, previous, 1)
-    sort(results, by = x -> abs(x. accumulated_rotation))
+    check(Rotation(Forward(), 2))
+    check(Rotation(Forward(), 1))
+    check(Rotation(Backward(), 1))
+    check(Rotation(Backward(), 2))
+    return results
+end
+
+
+"""
+    TabletRotationPolicy
+
+A structure that consolidates parameters for controlling which tablet
+manipulation is preferred to achieve a given stitch color.
+"""
+@with_kw struct TabletRotationPolicy
+    # Absolute value of the number of forward or backward rotations a
+    # tablet can be turned between stitches.  Typically 1 or 2.
+    max_turn_per_stitch::UInt8 = 2
+
+    # whether the current rotation is allowed to reverse the rotation
+    # of the previous row and leave the surface stitches unanchored:
+    no_undo::Bool = true
+end
+
+
+"""
+    (::TabletRotationPolicy)(choices)
+
+Return the element of `choices` that best suits the policy.
+
+`choices` should be a vector as returned by `want_color`.
+"""
+function (policy::TabletRotationPolicy)(choices::WantColorChoices,
+                                        color, row::Integer, column::Integer, tablets,
+                                        previous_row_rotation::Integer,
+                                        previous_column_rotation::Integer
+                                        )::WantColorChoice
+    tablet = tablets[column]
+    choices = filter(choices) do choice
+        abs(rotation(tablet, choice.rotation)) <= policy.max_turn_per_stitch
+    end
+    if policy.no_undo
+        choices = filter(choices) do choice
+            rotation(tablet, choice.rotation) + previous_column_rotation != 0
+        end
+    end
+    if length(choices) == 0
+        error("Can't match color $color with tablet $tablet.")
+    end
+    
+    #=
+    # prefer the same rotation as for the previous tablet if
+    # it's acceptable and we've not passed the middle of the
+    # warp:
+    side(column) = sign(length(tablets)/2 - column)
+    if side(column) == side(column - 1)
+        previous_column_rotation
+    else
+        other(previous_column_rotation)
+    end
+    =#
+    
+    # SHOULD THERE BE A PARAMETER FOR THIS?
+    # Prefer minimizing accumulated_rotation.  Sorting is stable.
+    sort!(choices; by = choice -> abs(choice.accumulated_rotation))
+    return choices[1]
 end
 
 
@@ -153,6 +234,7 @@ struct TabletWeavingPattern # {C} # where C causes "invalid type signature" erro
     title::AbstractString
     image # ::Union{Nothing, Array{C, 2}}
     initial_tablets # ::Vector{<:Tablet{F} where {F <: C}}
+    tablet_rotation_policy::TabletRotationPolicy
     weaving_steps
     end_tablets
     # top_image_stitches and bottom_image_stitches each are a vector
@@ -163,57 +245,49 @@ struct TabletWeavingPattern # {C} # where C causes "invalid type signature" erro
     bottom_image_stitches
 end
 
-function rotation_plan_from_image(image, tablets)
+function rotation_plan_from_image(image, tablets, policy::TabletRotationPolicy)
     # Remember what we've previously computed:
-    results = Array{Union{Nothing, RotationDirection}}(nothing, size(image))
+    results = Array{Int}(undef, size(image))
     function plan(tablets, row, column)
 	if row < 1 || row > size(image)[1]
 	    return nothing
 	end
-        side(column) = sign(length(tablets)/2 - column)
         tablet = tablets[column]
 	color = image[row, column]
-        choices = map(r -> r.rotation, want_color(tablet, color))
-        left_neighbor_rotation = (
-            if column > 1
-                results[row, column - 1]
-            else
-                nothing
-            end)
-        if length(choices) == 0
-            error("Can't match color $color with tablet $tablet.")
-        elseif length(choices) == 1
-            rotation = choices[1]
-        elseif left_neighbor_rotation == nothing
-            # Prefer minimizing accumulated_rotation.  want_color
-            # sorts by this.
-            rotation = choices[1]
-        elseif side(column) == side(column - 1)
-            # prefer the same rotation as for the previous tablet if
-            # it's acceptable and we've not passed the middle of the
-            # warp:
-            rotation = left_neighbor_rotation
-        elseif other(left_neighbor_rotation) in choices
-            rotation = other(left_neighbor_rotation)
+        choices = want_color(tablet, color)
+        choice = policy(choices, color, row, column, tablets,
+                        if row > 1
+                            results[row - 1, column]
+                        else
+                            0
+                        end,
+                        if column > 1
+                            results[row, column - 1]
+                        else
+                            0
+                        end)
+        results[row, column] = choice.rotation
+        if choice.rotation > 0
+            Rotation(Forward(), choice.rotation)
         else
-            rotation = choices[1]
+            Rotation(Backward(), - choice.rotation)
         end
-        cached = (row=row, column=column, rotation=rotation)
-        results[row, column] = rotation
-        rotation
     end
     plan
 end
 
 function TabletWeavingPattern(title::AbstractString, image;
-			      threading_function = identity)
+			      threading_function = identity,
+                              policy = TabletRotationPolicy())
     image = longer_dimension_counts_weft(image)
     initial_tablets = threading_function(tablets_for_image(image))
     tablets = copy.(initial_tablets)
     top, bottom, instructions =
-	tablet_weave(tablets, rotation_plan_from_image(image, tablets))
+	tablet_weave(tablets, rotation_plan_from_image(image, tablets, policy))
     
-    TabletWeavingPattern(title, image, initial_tablets, instructions, tablets,
+    TabletWeavingPattern(title, image, initial_tablets,
+                         policy,
+                         instructions, tablets,
 			 top, bottom)
 end
 

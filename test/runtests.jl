@@ -1,4 +1,5 @@
 using TabletWeaving
+using TabletWeaving: WantColorChoice
 using TabletWeaving: next, previous, opposite
 using Test
 using Colors
@@ -41,11 +42,11 @@ include("test_tablets.jl")
 	    c=border1.c,
 	    d=border1.d,
 	    threading=other(border1.threading))
-	(2 * border1) +
-	    symetric_threading!(tablets_for_image(
-		longer_dimension_counts_weft(GRAY_WEAVE));
-				leftthreading=other(border1.threading)) +
-		                    (2 * border2)
+	((2 * border1)
+         + symetric_threading!(tablets_for_image(
+	     longer_dimension_counts_weft(GRAY_WEAVE));
+			       leftthreading=other(border1.threading))
+         + (2 * border2))
     end
 
 
@@ -55,6 +56,10 @@ include("test_tablets.jl")
     end
 
     @testset "Tablet structure tests" begin
+        @test TabletEdge(4) + 1 == TabletEdge(3)
+        @test TabletEdge(4) - 1 == TabletEdge(1)
+        @test TabletEdge(4) + 2 == TabletEdge(4) - 2
+
 	for hole in TabletHole.(TABLET_HOLE_LABELS)
 	    @test next(previous(hole))== hole
 	    @test previous(next(hole)) == hole
@@ -80,24 +85,29 @@ include("test_tablets.jl")
     @testset "Tablet rotation tests" begin
         let
 	    bf = Tablet(; a=:A, b=:B, c=:C, d=:D, threading=BackToFront())
+            @test top_edge(bf) == TabletEdge(4)
 	    @test bf.this_shot_rotation == 0
             @test top_edge(bf) == TabletEdge(4)
-	    rotate!(bf, ABCD())
+	    rotate!(bf, Rotation(ABCD(), 1))
 	    @test bf.this_shot_rotation == 1
-	    rotate!(bf, DCBA())
-	    @test bf.this_shot_rotation == 0
+            shot!(bf)
+            @test top_edge(bf) == TabletEdge(4) + 1
+	    rotate!(bf, Rotation(DCBA(), 1))
+	    @test bf.this_shot_rotation == -1
+            shot!(bf)
+            @test top_edge(bf) == TabletEdge(4) + (1 - 1)
         end
         let
 	    bf = Tablet(; a=:A, b=:B, c=:C, d=:D, threading=BackToFront())
-	    rotate!(bf, Clockwise())
+	    rotate!(bf, Rotation(Clockwise(), 1))
 	    @test bf.this_shot_rotation == 1
-	    rotate!(bf, CounterClockwise())
+	    rotate!(bf, Rotation(CounterClockwise(), 1))
 	    @test bf.this_shot_rotation == 0
 	    
 	    fb = Tablet(; a=:A, b=:B, c=:C, d=:D, threading=FrontToBack())
-	    rotate!(fb, Clockwise())
+	    rotate!(fb, Rotation(Clockwise(), 1))
 	    @test fb.this_shot_rotation == -1
-	    rotate!(fb, CounterClockwise())
+	    rotate!(fb, Rotation(CounterClockwise(), 1))
 	    @test fb.this_shot_rotation == 0
 
 	    html"Clockwise and CounterClockwise rotate! assertions passed."
@@ -106,29 +116,29 @@ include("test_tablets.jl")
 	    bf = Tablet(; a=:A, b=:B, c=:C, d=:D,
 			threading=BackToFront(),
 			stacking=FrontToTheRight())
-	    rotate!(bf, Forward())
+	    rotate!(bf, Rotation(Forward(), 1))
 	    @test bf.this_shot_rotation == 1
-	    rotate!(bf, Backward())
+	    rotate!(bf, Rotation(Backward(), 1))
 	    @test bf.this_shot_rotation == 0
 	    
 	    fb = Tablet(; a=:A, b=:B, c=:C, d=:D,
 			threading=FrontToBack(),
 			stacking=FrontToTheRight())
-	    rotate!(fb, Forward())
+	    rotate!(fb, Rotation(Forward(), 1))
 	    @test fb.this_shot_rotation == 1
-	    rotate!(fb, Backward())
+	    rotate!(fb, Rotation(Backward(), 1))
 	    @test fb.this_shot_rotation == 0
 
 	    bf.stacking = FrontToTheLeft()
-	    rotate!(bf, Forward())
+	    rotate!(bf, Rotation(Forward(), 1))
 	    @test bf.this_shot_rotation == -1
-	    rotate!(bf, Backward())
+	    rotate!(bf, Rotation(Backward(), 1))
 	    @test bf.this_shot_rotation == 0
 	    
 	    fb.stacking = FrontToTheLeft()
-	    rotate!(fb, Forward())
+	    rotate!(fb, Rotation(Forward(), 1))
 	    @test fb.this_shot_rotation == -1
-	    rotate!(fb, Backward())
+	    rotate!(fb, Rotation(Backward(), 1))
 	    @test fb.this_shot_rotation == 0
         end
     end
@@ -163,14 +173,39 @@ include("test_tablets.jl")
 
     @testset "want_color test" begin
         let
-	    tablet = GRAY_TABLETS[5]
-	    red = tablet.a
-	    yellow = tablet.b
-	    red, yellow #=
-	    @assert want_color(tablet, red) == (TabletEdge(4), Forward())
-	    @assert want_color(tablet, yellow) == (TabletEdge(2), Backward())
-	    html"want_color tests pass."
-	    =#
+            tablet = Tablet(a=:A, b=:B, c=:C, d=:D)
+            edge = top_edge(tablet)
+            @assert edge == TabletEdge(4)
+            @test TabletWeaving.want_color(tablet, :A) == [
+                WantColorChoice(Rotation(Backward(), 1), -1, -1, next(edge))
+            ]
+            @test TabletWeaving.want_color(tablet, :B) == [
+                WantColorChoice(Rotation(Backward(), 2), -2, -2, next(next(edge)))
+            ]
+            @test TabletWeaving.want_color(tablet, :C) == [
+                WantColorChoice(Rotation(Forward(), 2), 2, 2, previous(previous((edge))))
+            ]
+            @test TabletWeaving.want_color(tablet, :D) == [
+                WantColorChoice(Rotation(Forward(), 1), 1, 1, previous((edge)))
+            ]
+        end
+        let
+            # tablets_for_image alternates colors around the Tablet.
+            tablet = Tablet(a=:X, b=:Y, c=:X, d=:Y)
+            edge = top_edge(tablet)
+            @assert edge == TabletEdge(4)
+	    @test TabletWeaving.want_color(tablet, :X) == [
+                WantColorChoice(Rotation(Forward(), 2), 2, 2, previous(previous(edge))),
+                # Rotation(Forward(), 1) is the wrong color.
+                WantColorChoice(Rotation(Backward(), 1), -1, -1, next(edge))
+                # Rotation(Backward(), 2) is the wrong color.
+            ]
+	    @test TabletWeaving.want_color(tablet, :Y) == [
+                # Rotation(Forward(), 2) is the wrong color.
+                WantColorChoice(Rotation(Forward(), 1), 1, 1, previous(edge)),
+                # Rotation(Backward(), 1) is the wrong color.
+                WantColorChoice(Rotation(Backward(), 2), -2, -2, next(next((edge))))
+            ]
         end
     end
 
