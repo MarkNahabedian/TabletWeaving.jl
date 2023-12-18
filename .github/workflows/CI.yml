@@ -1,5 +1,6 @@
 name: CI
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -19,6 +20,7 @@ jobs:
       matrix:
         version:
           - '1.8'
+          - '1.9'
           - 'nightly'
         os:
           - ubuntu-latest
